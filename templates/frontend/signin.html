@@ -1,0 +1,292 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title> product detail</title>
+{% endblock title %}
+    
+
+
+
+
+{% block content %}
+
+
+
+<style>
+  .container1 {
+    display: flex;
+
+  }
+  
+  
+  
+  
+  
+  .brand {
+    color: white;
+    font-size: 22px;
+    font-weight: 600;
+    margin-left: 10px;
+  }
+  
+  
+  
+  .house-img {
+    width: 840px;
+    height: 630px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+  }
+
+.right-section {
+  margin-left: 68px;
+  margin-top: 8px;
+  background: white;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.sign-in-btn {
+  background: #091c2e;
+  color: white;
+  font-size: 18px;
+  padding: 10px 32px;
+  border-radius: 22px;
+  border: none;
+  margin-left: 195px;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+  
+}
+
+.form-box {
+  width: 528px;
+  min-width: 300px;
+  background: none;
+  padding: 0 12px;
+}
+
+.form-box h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #232c51;
+  margin-bottom: 4px;
+}
+
+.subtext {
+  font-size: 15px;
+  color: #7d7d7d;
+  margin-bottom: 28px;
+  display: block;
+}
+
+form label {
+  display: block;
+  margin-top: 18px;
+  margin-bottom: 4px;
+  color: #465486;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+input[type="email"], input[type="password"], input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #d8d8d8;
+  font-size: 15px;
+  background: #f7f7fc;
+  margin-bottom: 4px;
+  outline: none;
+}
+
+.password-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.eye {
+  font-size: 20px;
+  margin-left: 4px;
+  color: #b2b2b2;
+  cursor: pointer;
+}
+
+.options-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  margin-bottom: 14px;
+}
+
+.remember-me input {
+  margin-right: 4px;
+}
+
+.forgot {
+  font-size: 14px;
+  color: #232c51;
+  text-decoration: none;
+}
+
+.login-btn {
+  width: 100%;
+  background: #232c51;
+  color: white;
+  font-size: 17px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 0;
+  margin-top: 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(35,44,81,0.09);
+}
+
+.instant-login-text {
+  text-align: center;
+  margin: 22px 0 10px 0;
+  color: #8792a5;
+  font-size: 15px;
+}
+
+.social-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.google-btn, .facebook-btn {
+  flex: 1;
+  background: #f3f3f3;
+  border: none;
+  border-radius: 5px;
+  color: #232c51;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 0;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(35,44,81,0.06);
+}
+
+.facebook-btn {
+  margin-left: 0;
+}
+
+.register-row {
+  text-align: center;
+  color: #7d7d7d;
+  font-size: 15px;
+  margin-top: 10px;
+}
+
+.register-link {
+  color: #233e96;
+  font-weight: bold;
+  text-decoration: none;
+  margin-left: 4px;
+}
+
+
+/* Parent container animation */
+.form-box {
+  opacity: 0;
+  transform: translateX(100px);
+  transition: opacity 0.7s ease, transform 1.5s ease;
+}
+
+.form-box.animate-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Optional: Stagger children for cascade effect */
+.form-box > * {
+  opacity: 0;
+  transform: translateX(90px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(.23,1.07,.59,.99);
+}
+
+.form-box.animate-in > * {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Staggering: delays */
+.form-box.animate-in > :nth-child(1) { transition-delay: 0.1s; }
+.form-box.animate-in > :nth-child(2) { transition-delay: 0.5s; }
+.form-box.animate-in > :nth-child(3) { transition-delay: 0.10s; }
+.form-box.animate-in > :nth-child(4) { transition-delay: 0.15s; }
+.form-box.animate-in > :nth-child(5) { transition-delay: 0.20s; }
+.form-box.animate-in > :nth-child(6) { transition-delay: 0.25s; }
+/* Add more if needed for extra children */
+
+</style>
+<main>
+  
+  
+  
+  
+  
+  
+  <div style="margin-top:101px;display: flex;flex-direction: row;" class="left-section">
+  <div class="banner">
+    <img src="{% static 'frontend/images/ava.webp'%}" alt="" class="house-img">
+    <div class="container1">
+      <div class="banner-text">
+      </div>
+    </div>
+  </div>
+  <div class="right-section">
+    
+    <div style="margin-top:50px;" class="form-box">
+      <h1>Welcome Back to Pickle Masters</h1>
+      <span class="subtext">Sign up for your account</span>
+      <form method="POST" action="{% url 'signin' %}"> 
+        {% csrf_token %} {% if messages %}
+        <ul class="messages">
+          {% for message in messages %}
+          <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        
+        <label for="firstname">First Name</label>
+        <input type="text" id="firstname" name="firstname" placeholder="Enter Your First Name" required>
+        
+        <label for="lastname">Last Name</label>
+        <input type="text" id="lastname" name="lastname" placeholder="Enter Your Last Name" required>
+        
+        <label for="email">Your Email</label>
+        <input type="email" id="email" name="email" placeholder="name@gmail.com" required> 
+        
+        <label for="password">Password</label>
+        <div class="password-row">
+          <input type="password" id="password" name="password" placeholder="Password" required>
+          <span class="eye">&#128065;</span>
+        </div>
+        <button type="submit" class="login-btn">Register</button> 
+      </form>
+    </div>
+    <div class="register-row d-flex justify-content-center align-items-center mt-4">
+      <span>Already have an account? </span><a href="{% url 'login' %}" class="register-link">Log in</a>
+    </div>
+  </div>
+</div>
+</div>
+</main>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('.form-box').classList.add('animate-in');
+  });
+</script>
+
+
+
+              {% endblock content %}

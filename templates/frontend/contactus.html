@@ -1,0 +1,346 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title> product detail</title>
+{% endblock title %}
+    
+
+
+
+
+{% block content %}
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+
+ 
+      
+.contact-section {
+  width: 100%;
+  padding: 40px 0 60px 0;
+  background-color: #e2d6d6;
+}
+
+.contact-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.contact-info {
+  background: #d88641;
+  color: #000000ff;
+  border-radius: 8px;
+  padding: 40px 32px;
+  min-width: 400px;
+  max-width: 370px;
+  box-sizing: border-box;
+}
+.contact-info h2 {
+  font-weight: 700;
+  font-size: 1.35rem;
+  margin-bottom: 26px;
+}
+.info-title {
+  font-weight: 700;
+  margin-bottom: 2px;
+  margin-top: 4px;
+}
+.contact-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.icon {
+  font-size: 1.7em;
+  margin-top: 3px;
+  /* Replace these with icons or images as you wish */
+}
+
+.social {
+  margin-top: 22px;
+  gap: 0px;
+}
+.social-icons {
+  margin-top: 10px;
+}
+.social-icons a {
+  display: inline-block;
+  margin-right: 18px;
+  color: #fff;
+  font-size: 1.45em;
+  text-decoration: none;
+}
+.social-icons a:last-child {
+  margin-right: 0;
+}
+
+.contact-form {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+  padding: 38px 36px 32px 36px;
+  min-width: 365px;
+  max-width: 700px;
+  height: 523px;
+  box-sizing: border-box;
+}
+
+.contact-form h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 26px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.form-group {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+}
+.form-group label {
+  font-weight: 700;
+  font-size: 1em;
+  margin-bottom: 6px;
+}
+.form-group input, .form-group textarea {
+  border: 1.5px solid #d8dbe1;
+  border-radius: 6px;
+  padding: 10px 13px;
+  font-size: 1rem;
+  outline: none;
+  margin-bottom: 0;
+}
+.form-group textarea {
+  resize: none;
+}
+.full-width {
+  width: 100%;
+  margin-bottom: 20px;
+}
+.submit-button button[type="submit"] {
+  background: #d88641;
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 5px;
+  padding: 12px 34px;
+  font-size: 1.08em;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 8px;
+}
+.submit-button button[type="submit"]:hover {
+  background: #741102ff;
+}
+
+
+@media (max-width: 500px) {
+
+  .contact-section {
+    padding: 20px 0 40px 0;
+  }
+
+  .contact-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 0 15px;
+  }
+
+  .contact-info {
+    width: 100%;
+    min-width: unset;
+    max-width: 100%;
+    padding: 25px 20px;
+    margin-top: 53px;
+    text-align: left;
+  }
+
+  .contact-info h2 {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+
+  .contact-row {
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .icon {
+    font-size: 1.4em;
+  }
+
+  .social {
+    text-align: center;
+  }
+
+  .social-icons {
+    text-align: center;
+  }
+
+  .social-icons a {
+    font-size: 1.2em;
+    margin-right: 12px;
+  }
+
+  .contact-form {
+    width: 100%;
+    min-width: unset;
+    max-width: 100%;
+    padding: 25px 20px;
+    height: auto;
+  }
+
+  .contact-form h2 {
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 22px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .form-group label {
+    font-size: 0.9rem;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 0.95rem;
+    padding: 9px 11px;
+  }
+
+  button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    margin-top: 15px;
+  }
+
+  /* Adjust spacing and typography */
+  .info-title {
+    font-size: 0.95rem;
+  }
+
+  .contact-row p {
+    font-size: 0.9rem;
+  }
+
+  /* Reduce section top margin on mobile */
+  main > div[style*="margin-top"] {
+    margin-top: 70px !important;
+  }
+}
+
+
+        
+</style>
+</head>
+<body>
+
+
+    <main>
+
+
+<div style="margin-top: 107px;"  class="contact-section">
+  <div class="contact-container">
+    <div class="contact-info">
+      <h2>Contact Us</h2>
+      <div class="contact-row">
+<span class="icon">
+  <i class="bi bi-telephone-fill"></i>
+</span>
+        <div>
+          <p class="info-title">Call Now</p>
+          <p>+91 8074173765</p>
+        </div>
+      </div>
+      <div class="contact-row">
+        <span class="icon">
+          <i class="bi bi-envelope-fill"></i>
+        </span>
+        <div>
+          <p class="info-title">Email Address</p>
+          <p>picklemasters@gmail.com<br>info@picklemasters.com</p>
+        </div>
+      </div>
+      <div class="contact-row">
+        <span class="icon">
+          <i class="bi bi-geo-alt-fill"></i>
+        </span>
+        <div>
+          <p class="info-title">Office Location</p>
+          <p> Pickle masters , Shanthi Layout Main Rd, Muniswamy Reddy Layout, Dr Ambedkar Nagar, Ramamurthy Nagar, Bengaluru, Karnataka 560016</p>
+        </div>
+      </div>
+      {% comment %} <div class="contact-row social">
+        <p class="info-title">Follow Us</p>
+        <div class="social-icons">
+          <a href="#"><span class="icon">&#xf09a;</span></a>
+          <a href="#"><span class="icon">&#xf099;</span></a>
+          <a href="#"><span class="icon">&#xf16d;</span></a>
+          <a href="#"><span class="icon">&#xf167;</span></a>
+        </div>
+      </div> {% endcomment %}
+    </div>
+    <div class="contact-form">
+      <h2>Contact Me</h2>
+      <form>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name *</label>
+            <input type="text" placeholder="Your First Name" required>
+          </div>
+          <div class="form-group">
+            <label>Last Name *</label>
+            <input type="text" placeholder="Your Last Name" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <input type="tel" placeholder="Phone number" required>
+          </div>
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" placeholder="Email" required>
+          </div>
+        </div>
+        <div class="form-group full-width">
+          <label>Write Your Message *</label>
+          <textarea placeholder="Write Your Message" rows="5" required></textarea>
+        </div>
+        <div class=" submit-button">
+          <button type="submit">Submit Now</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+    </main>
+
+{% endblock content %}

@@ -1,0 +1,257 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Address | Profile</title>
+{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'frontend/css/style.css' %}">
+
+<style>
+/* ==== MODAL ==== */
+.modal-backdrop {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.3);
+    justify-content: center; align-items: center;
+}
+.modal-content {
+    background: #fff; padding: 30px;
+    border-radius: 8px; width: 90%; max-width: 400px;
+    position: relative; text-align: left;
+}
+.close {
+    position: absolute; top: 10px; right: 20px;
+    font-size: 28px; font-weight: bold; cursor: pointer;
+}
+.close:hover { color: #333; }
+#modalTitle { font-size: 24px; font-weight: 600; : 1px solid #eee; }
+#addressForm label { display: block; font-size: 14px; font-weight: 500; margin-top: 10px; }
+#addressForm input[type="text"], #addressForm select {
+    width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;
+}
+#saveAddressBtn { background: #d88641; color: #fff; padding: 12px; border: none; border-radius: 4px; width: 100%; margin-top: 15px; cursor: pointer; }
+#saveAddressBtn:hover { background-color: #b46f31; }
+/* Checkbox */
+.checkbox { display: flex; align-items: center; margin-top: 15px; }
+.checkbox input { width: 20px; height: 20px; margin-right: 10px; appearance: none; border-radius: 3px; border: 1px solid #999; display: grid; place-content: center; }
+.checkbox input:checked { background-color: #d88641; border-color: #d88641; }
+.checkbox input:checked::before { content: "\2713"; transform: scale(1); color: white; text-align: center; }
+</style>
+
+<div style="margin-top: 120px;" class="container1">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>My Profile</h2>
+    <a href="{% url 'profile' %}"><button>Dashboard</button></a>
+    <a href="{% url 'orders_page' %}"><button>Orders</button></a>
+    <a href="{% url 'address_profile' %}"><button style="background:#d88641;color:#fff;">Addresses</button></a>
+    <a href="{% url 'update_profile' %}"><button>Update Profile</button></a>
+    <a href="{% url 'logout' %}"><button>Log Out</button></a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h2>Addresses</h2>
+    <div class="addresses-grid">
+      {% for address in addresses %}
+      <div class="address-card" data-id="{{ address.id }}">
+        <input type="radio" name="address" id="address{{ address.id }}" {% if address.is_default %}checked{% endif %}>
+        <label for="address{{ address.id }}" class="address-info">
+          <div class="address-header">
+            <h3>{{ address.first_name }} {{ address.last_name }}</h3>
+            <span class="tag">{{ address.get_address_type_display }}</span>
+          </div>
+          <p><strong>Address:</strong> {{ address.address_line_one }}{% if address.address_line_two %}, {{ address.address_line_two }}{% endif %}</p>
+          <p><strong>City:</strong> {{ address.city }}</p>
+          <p><strong>Pin Code:</strong> {{ address.zip_code }}</p>
+          <div class="address-actions">
+            <button class="edit-btn"><i class="fa-regular fa-pen-to-square"></i> Edit</button>
+            <button class="remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button>
+          </div>
+        </label>
+      </div>
+      {% empty %}
+        <p>No addresses found. Click "Add Address" to create one.</p>
+      {% endfor %}
+    </div>
+
+    <button type="button" id="addAddressBtn" class="btn-primary">Add Address</button>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="addressModal" class="modal-backdrop">
+  <div class="modal-content">
+    <span id="closeModal" class="close">&times;</span>
+    <h2 id="modalTitle">Add Address</h2>
+    <form id="addressForm">
+      {% csrf_token %}
+      <input type="hidden" id="addressSlug">
+      <label>First Name</label>
+      <input type="text" id="firstName" name="first_name" required>
+        <label>Last Name</label>
+        <input type="text" id="lastName" name="last_name" required>
+        <label>Mobile Number</label>
+        <input type="text" id="mobileNumber" maxlength="10" pattern="[0-9]{10}">
+        <label>Address Type</label>
+        <select id="addressType" name="address_type" required>
+            <option value="home">Home</option>
+            <option value="office">Office</option>
+            <option value="other">Other</option>
+        </select>
+        <label>Address Line 1</label>
+        <input type="text" id="addressLine1" name="address_line_one" required>
+        <label>Address Line 2 <small>(optional)</small></label>
+        <input type="text" id="addressLine2" name="address_line_two">
+        <label>City</label>
+        <input type="text" id="city" name="city" required>
+        <label>Pin Code</label>
+        <input type="text" id="pinCode" maxlength="6" pattern="[0-9]{6}">
+      <div class="checkbox">
+        <input type="checkbox" id="setDefault" name="is_default">
+        <label for="setDefault">Set as Default</label>
+      </div>
+      <button type="submit" id="saveAddressBtn">Save Address</button>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addressForm = document.getElementById('addressForm');
+        const addressModal = document.getElementById('addressModal');
+        const addAddressBtn = document.getElementById('addAddressBtn');
+        const closeModalBtn = document.getElementById('closeModal');
+        const addressesGrid = document.querySelector('.addresses-grid');
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        let editingAddressId = null;
+
+        // Open modal
+        addAddressBtn.onclick = () => {
+            editingAddressId = null;
+            addressForm.reset();
+            document.getElementById('modalTitle').textContent = 'Add Address';
+            addressModal.style.display = 'flex';
+        };
+
+        closeModalBtn.onclick = () => addressModal.style.display = 'none';
+        addressModal.onclick = e => { if (e.target === addressModal) addressModal.style.display = 'none'; };
+
+        addressForm.onsubmit = e => {
+            e.preventDefault();
+            const data = {
+                first_name: document.getElementById('firstName').value,
+                last_name: document.getElementById('lastName').value,
+                mobile_number: document.getElementById('mobileNumber').value,
+                address_type: document.getElementById('addressType').value,
+                address_line_one: document.getElementById('addressLine1').value,
+                address_line_two: document.getElementById('addressLine2').value,
+                city: document.getElementById('city').value,
+                zip_code: document.getElementById('pinCode').value,
+                is_default: document.getElementById('setDefault').checked
+            };
+
+            const url = editingAddressId
+                ? `/addresses/update/${editingAddressId}/`
+                : `{% url 'create_address' %}`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (editingAddressId) {
+                    const oldCard = document.querySelector(`.address-card[data-id="${editingAddressId}"]`);
+                    if (oldCard) oldCard.remove();
+                }
+                const newCard = document.createElement('div');
+                newCard.className = 'address-card';
+                newCard.dataset.id = data.id;
+                newCard.innerHTML = `
+                    <input type="radio" name="address" id="address${data.id}" ${data.is_default ? 'checked' : ''}>
+                    <label for="address${data.id}" class="address-info">
+                        <div class="address-header">
+                            <h3>${data.first_name} ${data.last_name}</h3>
+                            <span class="tag">${data.address_type}</span>
+                        </div>
+                        <p><strong>Address:</strong> ${data.address_line_one}${data.address_line_two ? ', '+data.address_line_two : ''}</p>
+                        <p><strong>City:</strong> ${data.city}</p>
+                        <p><strong>Pin Code:</strong> ${data.zip_code}</p>
+                        <div class="address-actions">
+                            <button class="edit-btn"><i class="fa-regular fa-pen-to-square"></i> Edit</button>
+                            <button class="remove-btn"><i class="fa-regular fa-trash-can"></i> Remove</button>
+                        </div>
+                    </label>
+                `;
+                addressesGrid.prepend(newCard);
+                addressModal.style.display = 'none';
+                Swal.fire('Success', editingAddressId ? 'Address updated!' : 'Address added!', 'success');
+                editingAddressId = null;
+            });
+        };
+
+        addressesGrid.onclick = e => {
+            const card = e.target.closest('.address-card');
+            if (!card) return;
+            const addressId = card.dataset.id;
+
+            // Edit
+            if (e.target.closest('.edit-btn')) {
+                editingAddressId = addressId;
+                fetch(`/addresses/get/${addressId}/`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('firstName').value = data.first_name;
+                    document.getElementById('lastName').value = data.last_name;
+                    document.getElementById('addressType').value = data.address_type;
+                    document.getElementById('addressLine1').value = data.address_line_one;
+                    document.getElementById('addressLine2').value = data.address_line_two || '';
+                    document.getElementById('city').value = data.city;
+                    document.getElementById('pinCode').value = data.zip_code;
+                    document.getElementById('setDefault').checked = data.is_default;
+                    document.getElementById('modalTitle').textContent = 'Edit Address';
+                    addressModal.style.display = 'flex';
+                });
+            }
+
+            // Delete
+            if (e.target.closest('.remove-btn')) {
+                Swal.fire({
+                    title: 'Delete?',
+                    text: 'Address will be removed permanently.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!'
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        fetch(`/addresses/delete/${addressId}/`, { method: 'POST', headers: { 'X-CSRFToken': csrfToken } })
+                        .then(res => res.json())
+                        .then(data => { if(data.success) card.remove(); });
+                    }
+                });
+            }
+
+            // Set Default
+            if (e.target.matches('input[type="radio"]')) {
+                fetch(`/addresses/set-default/${addressId}/`, { method: 'POST', headers: { 'X-CSRFToken': csrfToken } })
+                .then(res => res.json())
+                .then(data => { if(data.success) document.querySelectorAll('input[name="address"]').forEach(r => r.checked=false); e.target.checked=true; });
+            }
+        };
+    });
+</script>
+{% endblock content %}

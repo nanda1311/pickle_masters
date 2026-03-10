@@ -1,0 +1,175 @@
+{% extends 'backend/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>orders list</title>
+{% endblock title %}
+    
+
+
+
+
+{% block content %}
+{% block tasktitle %}orders list{% endblock tasktitle %}
+
+          <div>
+               <div class="page-content">
+                    <div class="container-xxl">
+
+                         <div class="row">
+                              <div class="col-md-6 col-xl-3">
+                                   <div class="card">
+                                        <div class="card-body">
+                                             <div class="d-flex align-items-center justify-content-between">
+                                                  <div>
+                                                       <h4 class="card-title mb-2">All Orders</h4>
+                                                       <p class="text-muted fw-medium fs-22 mb-0">490</p>
+                                                  </div>
+                                                  <div>
+                                                       <div class="avatar-md bg-primary bg-opacity-10 rounded">
+                                                            <iconify-icon icon="solar:chat-round-money-broken" class="fs-32 text-primary avatar-title"></iconify-icon>
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                   </div>
+                              </div>
+                              <div class="col-md-6 col-xl-3">
+                                   <div class="card">
+                                        <div class="card-body">
+                                             <div class="d-flex align-items-center justify-content-between">
+                                                  <div>
+                                                       <h4 class="card-title mb-2">Canceled Orders</h4>
+                                                       <p class="text-muted fw-medium fs-22 mb-0">241</p>
+                                                  </div>
+                                                  <div>
+                                                       <div class="avatar-md bg-primary bg-opacity-10 rounded">
+                                                            <iconify-icon icon="solar:cart-cross-broken" class="fs-32 text-primary avatar-title"></iconify-icon>
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                   </div>
+                              </div>
+
+                              <div class="col-md-6 col-xl-3">
+                                   <div class="card">
+                                        <div class="card-body">
+                                             <div class="d-flex align-items-center justify-content-between">
+                                                  <div>
+                                                       <h4 class="card-title mb-2">Delivered</h4>
+                                                       <p class="text-muted fw-medium fs-22 mb-0">200</p>
+                                                  </div>
+                                                  <div>
+                                                       <div class="avatar-md bg-primary bg-opacity-10 rounded">
+                                                            <iconify-icon icon="solar:clipboard-check-broken" class="fs-32 text-primary avatar-title"></iconify-icon>
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                   </div>
+                              </div>
+                              <div class="row">
+                              <div class="col-xl-12">
+                                   <div class="card">
+                                        <div class="d-flex card-header justify-content-between align-items-center">
+                                             <div>
+                                                  <h4 class="card-title">All Order List</h4>
+                                             </div>
+                                        </div>
+                                        <div class="card-body p-0">
+                                             <div class="table-responsive">
+                                                  {% if orders %}
+                                                  <table class="table align-middle mb-0 table-hover table-centered">
+                                                  <thead class="bg-light-subtle">
+                                                       <tr>
+                                                            <th>Order ID</th>
+                                                            <th>Created at</th>
+                                                            <th>Customer</th>
+                                                            <th>Total</th>
+                                                            <th>Payment Status</th>
+                                                            <th>Items</th>
+                                                            <th>Order Status</th>
+                                                            <th>Action</th>
+                                                       </tr>
+                                                  </thead>
+                                                  <tbody>
+                                                       {% for order in orders %}
+                                                       <tr>
+                                                            <td>#{{ order.id }}</td>
+                                                            <td>{{ order.created_at|date:"d M Y" }}<br><small>{{ order.created_at|time:"h:i A" }}</small></td>
+                                                            <td><a href="#!" class="link-primary fw-medium">{{ order.user.username }}</a></td>
+                                                            <td>₹{{ order.total_amount|floatformat:2 }}</td>
+                                                            <td>
+                                                                 {% if order.payment_method == 'cod' %}
+                                                                 <span class="badge bg-light text-dark px-2 py-1 fs-13">Cash on Delivery</span>
+                                                                 {% else %}
+                                                                 <span class="badge bg-light text-dark px-2 py-1 fs-13">Online</span>
+                                                                 {% endif %}
+                                                            </td>
+                                                            <td>{{ order.items.count }}</td>
+                                                            <td>
+                                                                 <span class="badge border border-secondary 
+                                                                      {% if order.status == 'completed' %}text-success
+                                                                      {% elif order.status == 'pending' %}text-warning
+                                                                      {% else %}text-danger{% endif %} px-2 py-1 fs-13">
+                                                                      {{ order.get_status_display }}
+                                                                 </span>
+                                                            </td>
+                                                            <td>
+                                                                 <div class="d-flex gap-2">
+                                                                      <a href="{% url 'order_detail' order.id %}" class="btn btn-light btn-sm"><iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon></a>
+                                                                      <button class="btn btn-light btn-sm" onclick="toggleOrderItems('order-{{ order.id }}')">Items</button>
+                                                                 </div>
+                                                            </td>
+                                                       </tr>
+                                                       <!-- Order Items Tab -->
+                                                       <tr>
+                                                            <td colspan="4">
+                                                                 <div class="order-items-tab" id="order-{{ order.id }}" style="display:none;">
+                                                                      {% for item in order.items.all %}
+                                                                      <div class="order-item d-flex align-items-center p-2 border-bottom">
+                                                                      <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width:50px;height:50px;object-fit:cover;margin-right:15px;">
+                                                                      <div class="item-details flex-grow-1">
+                                                                           <div class="name">{{ item.product.name }}</div>
+                                                                           <div class="meta">
+                                                                                Size: <strong>{{ item.size }}</strong>
+                                                                                | Qty: <strong>{{ item.quantity }}</strong>
+                                                                           </div>
+                                                                      </div>
+                                                                      <div class="item-price">₹{{ item.price_at_purchase|floatformat:2 }}</div>
+                                                                      <div class="item-price ms-3">Subtotal: ₹{{ item.subtotal|floatformat:2 }}</div>
+                                                                      </div>
+                                                                      {% endfor %}
+                                                                 </div>
+                                                            </td>
+                                                       </tr>
+                                                       {% endfor %}
+                                                  </tbody>
+                                                  </table>
+                                                  {% else %}
+                                                  <div class="no-orders text-center p-4">
+                                                  <i class="fas fa-box-open" style="font-size:3rem;color:#ccc;"></i><br><br>
+                                                  <p>No orders found.</p>
+                                                  <a href="{% url 'shop' %}">Continue Shopping</a>
+                                                  </div>
+                                                  {% endif %}
+                                             </div>
+                                             <!-- end table-responsive -->
+                                        </div>
+                                   </div>
+                              </div>
+                         </div>
+
+<script>
+function toggleOrderItems(orderId) {
+    const element = document.getElementById(orderId);
+    if (element.style.display === 'none') {
+        element.style.display = 'block';
+    } else {
+        element.style.display = 'none';
+    }
+}
+</script>
+                    </div>
+                    {% endblock content %}

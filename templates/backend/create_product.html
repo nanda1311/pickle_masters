@@ -1,0 +1,64 @@
+{% extends 'backend/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>product add</title>
+{% endblock title %}
+    
+
+
+
+
+{% block content %}
+{% block tasktitle %}product add{% endblock tasktitle %}
+
+
+
+<div class="container-fluid pb-4 mb-5">
+  <div class="row justify-content-center">
+    <div class="" style="padding-left: 300px">
+      <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form.as_p }}
+
+          <h4>Set Prices for Each Size</h4>
+          {% for size in sizes %}
+              <div class="mb-3">
+                  <label><b>{{ size }}</b></label><br>
+                  <input type="number" step="0.01" name="price_{{ size }}" placeholder="Price for {{ size }}" class="form-control mb-2">
+                  <input type="number" step="0.01" name="discounted_price_{{ size }}" placeholder="Discounted Price for {{ size }}" class="form-control">
+              </div>
+          {% endfor %}
+
+          <h4>Upload Product Images</h4>
+          <input type="file" name="images" multiple class="form-control mb-3">
+
+          <button type="submit" class="btn btn-primary">Create Product</button>
+      </form>
+
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.9.11/tinymce.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+  tinymce.init({
+    selector: 'textarea#id_ingredients, textarea#id_nutrition_info',
+    height: 250,
+    menubar: false,
+    plugins: [
+      'advlist autolink lists link charmap preview anchor',
+      'searchreplace visualblocks code fullscreen',
+      'insertdatetime table paste code help wordcount'
+    ],
+    toolbar: 'undo redo | bold italic underline | bullist numlist | link | code',
+    branding: false
+  });
+</script>
+
+{% endblock script %}

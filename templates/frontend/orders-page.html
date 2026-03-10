@@ -1,0 +1,451 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>My Orders | Profile</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'frontend/css/style.css' %}">
+
+    <style>
+        /* =============================================
+           ORDERS PAGE – SPECIFIC STYLES ONLY
+           ============================================= */
+     /* Layout */
+
+        .container8 {
+            max-width: 1100px;
+            font-family: "Jost", sans-serif;
+
+            margin: 120px auto 40px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            display: flex;
+            padding: 30px 0;
+            min-height: calc(100vh - 160px);
+        }
+
+        .sidebar {
+            min-width: 260px;
+            padding: 0 30px 0 40px;
+            border-right: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .sidebar h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            color: #333;
+        }
+
+        .sidebar button {
+            background: #fff;
+            border: 2px solid #d88641;
+            color: #d88641;
+            font-size: 1.1rem;
+            width: 100%;
+            font-weight: 600;
+            padding: 12px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .sidebar button:hover,
+        .sidebar button[style*="background:#d52727"] {
+            background: #d88641 !important;
+            color: #fff !important;
+            border-color: #d88641;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 0 40px;
+            width: 100%;
+        }
+
+        .main-content h2 {
+            margin-top: 0;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        /* Orders Table */
+        .orders-table-wrapper {
+            margin-top: 28px;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,.08);
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        .orders-table th {
+            background: #f1f3f5;
+            padding: 15px 18px;
+            text-align: left;
+            font-weight: 700;
+            color: #333;
+            font-size: 1.07rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .orders-table td {
+            padding: 15px 18px;
+            border-bottom: 1px solid #ececec;
+            vertical-align: middle;
+            font-size: 1.05rem;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .status-completed { background: #d4edda; color: #155724; }
+        .status-pending   { background: #fff3cd; color: #856404; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+
+        /* View Button */
+        .view-button {
+            background: #d88641;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .view-button:hover {
+            background: #c77530;
+        }
+
+        /* Order Items Tab */
+        .order-items-tab {
+            display: none;
+            background: #fafafa;
+            padding: 18px;
+            border-radius: 10px;
+            margin-top: 12px;
+            border: 1px solid #eee;
+        }
+
+        .order-items-tab.active {
+            display: block;
+        }
+
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-details .name {
+            font-weight: 600;
+            color: #222;
+            font-size: 1rem;
+        }
+
+        .item-details .meta {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 3px 0;
+        }
+
+        .item-price {
+            font-weight: 600;
+            color: #d52727;
+            white-space: nowrap;
+            font-size: 0.95rem;
+        }
+
+        /* No Orders */
+        .no-orders {
+            text-align: center;
+            color: #222;
+            font-size: 1.12rem;
+            padding: 40px 0;
+            background: #fff;
+        }
+
+        .no-orders a {
+            color: #d88641;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .no-orders a:hover {
+            text-decoration: underline;
+        }
+
+
+        /* =============================================
+   MOBILE VERSION (max-width: 500px)
+   ============================================= */
+@media (max-width: 500px) {
+    .container8 {
+        margin: 80px 8px 20px;
+        padding: 15px 0;
+        border-radius: 10px;
+        box-shadow: none;
+        flex-direction: column;
+    }
+
+    .sidebar {
+        padding: 12px 10px;
+        border-bottom: 1px solid #f0f0f0;
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 8px;
+        white-space: nowrap;
+        min-width: 100%;
+    }
+
+    .sidebar h2 {
+        display: none; /* Hide sidebar title on mobile */
+    }
+
+    .sidebar button {
+        font-size: 0.85rem;
+        padding: 10px 15px;
+        border-radius: 20px;
+        margin-bottom: 0;
+        border-width: 1px;
+    }
+
+    .main-content {
+        padding: 15px 10px;
+    }
+
+    .main-content h2 {
+        font-size: 1.5rem;
+        margin-bottom: 12px;
+    }
+
+    /* Orders Table */
+    .orders-table-wrapper {
+        margin-top: 12px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .orders-table {
+        min-width: 600px; /* Ensures table is scrollable */
+    }
+
+    .orders-table th,
+    .orders-table td {
+        font-size: 0.82rem;
+        padding: 8px 10px;
+        line-height: 1.4;
+    }
+
+    .orders-table th {
+        font-size: 0.85rem;
+    }
+
+    /* Status Badge */
+    .status-badge {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+    }
+
+    /* View Button */
+    .view-button {
+        padding: 6px 12px;
+        font-size: 0.82rem;
+        border-radius: 5px;
+    }
+
+    /* Order Items Tab */
+    .order-items-tab {
+        padding: 12px;
+        margin-top: 8px;
+        border-radius: 8px;
+    }
+
+    .order-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 10px 0;
+    }
+
+    .order-item img {
+        width: 50px;
+        height: 50px;
+        border-radius: 6px;
+    }
+
+    .item-details .name {
+        font-size: 0.9rem;
+    }
+
+    .item-details .meta {
+        font-size: 0.8rem;
+        line-height: 1.3;
+    }
+
+    .item-price {
+        font-size: 0.85rem;
+    }
+
+    /* No Orders */
+    .no-orders {
+        padding: 30px 0;
+        font-size: 1rem;
+    }
+
+    .no-orders i {
+        font-size: 2.5rem;
+    }
+
+    .no-orders a {
+        font-size: 0.9rem;
+    }
+}
+    </style>
+{% endblock %}
+
+{% block content %}
+<div style="margin-top: 120px;" class="container8">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>My Profile</h2>
+        <a href="{% url 'profile' %}"><button>Dashboard</button></a>
+        <a href="{% url 'orders_page' %}"><button style="background:#d88641;color:#fff;">Orders</button></a>
+        <a href="{% url 'address_profile' %}"><button>Addresses</button></a>
+        <a href="{% url 'update_profile' %}"><button>Update Profile</button></a>
+        <a href="{% url 'logout' %}"><button>Log Out</button></a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        {% if orders %}
+        <div class="orders-table-wrapper">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td><strong>#{{ order.id }}</strong></td>
+                        <td>{{ order.created_at|date:"d M Y" }}<br><small>{{ order.created_at|time:"h:i A" }}</small></td>
+                        <td>
+                            {% if order.payment_method == 'cod' %}
+                                <span style="color:#d52727;font-weight:600;">Cash on Delivery</span>
+                            {% else %}
+                                Online
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="status-badge 
+                                {% if order.status == 'completed' %}status-completed
+                                {% elif order.status == 'pending' %}status-pending
+                                {% else %}status-cancelled{% endif %}">
+                                {{ order.get_status_display }}
+                            </span>
+                        </td>
+                        <td><strong>₹{{ order.total_amount|floatformat:2 }}</strong></td>
+                        <td>
+                            <button class="view-button" onclick="toggleOrderItems('order-{{ order.id }}')">View</button>
+                        </td>
+                    </tr>
+                    <!-- Order Items Tab -->
+                    <tr>
+                        <td colspan="6">
+                            <div class="order-items-tab" id="order-{{ order.id }}">
+                                {% for item in order.items.all %}
+                                <div class="order-item">
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                                    <div class="item-details">
+                                        <div class="name">{{ item.product.name }}</div>
+                                        <div class="meta">
+                                            Size: <strong>{{ item.size }}</strong>
+                                            | Qty: <strong>{{ item.quantity }}</strong>
+                                        </div>
+                                    </div>
+                                    <div class="item-price">₹{{ item.price_at_purchase|floatformat:2 }}</div>
+                                    <div class="item-price">Subtotal: ₹{{ item.subtotal|floatformat:2 }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="no-orders">
+            <i class="fas fa-box-open" style="font-size:3rem;color:#ccc;"></i><br><br>
+            <p>You haven't placed any orders yet.</p>
+            <a href="{% url 'shop' %}">Continue Shopping</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    function toggleOrderItems(orderId) {
+        // Get all order items tabs
+        const allTabs = document.querySelectorAll('.order-items-tab');
+        
+        // Hide all tabs and remove active class
+        allTabs.forEach(tab => {
+            tab.classList.remove('active');
+        });
+
+        // Show the clicked order's items tab
+        const targetTab = document.getElementById(orderId);
+        if (targetTab) {
+            targetTab.classList.toggle('active');
+        }
+    }
+</script>
+{% endblock content %}

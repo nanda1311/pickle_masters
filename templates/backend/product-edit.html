@@ -1,0 +1,292 @@
+{% extends 'backend/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title> product edit</title>
+{% endblock title %}
+    
+
+
+
+
+{% block content %}
+{% block tasktitle %}product edit{% endblock tasktitle %}
+          <!-- ========== App Menu End ========== -->
+
+          <!-- ==================================================== -->
+          <!-- Start right Content here -->
+          <!-- ==================================================== -->
+<div style="padding-left:110px;" class="container py-4">
+  <div style="margin-right:-135px;" class="row justify-content-center">
+    <div class="col-xl-10 col-lg-11 col-md-11 col-12">
+      <div class="card border-0 shadow rounded-3">
+        <div class="card-header bg-gradient bg-warning text-white py-3 rounded-top">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-edit me-2"></i>Edit Product - {{ product.name }}</h5>
+            <a href="{% url 'products' %}" class="btn btn-outline-light btn-sm">
+              <i class="fas fa-arrow-left me-1"></i> Back to Products
+            </a>
+          </div>
+        </div>
+        <div class="card-body px-4 py-3">
+          <form method="post" enctype="multipart/form-data" novalidate id="product-form">
+            {% csrf_token %}
+            <div class="row g-3">
+              {% for field in form %}
+              <div class="col-md-6">
+                <label for="{{ field.id_for_label }}" class="form-label fw-semibold small text-muted">
+                  {{ field.label }}
+                  {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                </label>
+                <div class="input-group input-group-sm">
+                  {{ field }}
+                </div>
+                {% if field.help_text %}
+                <div class="form-text small text-muted">
+                  {{ field.help_text }}
+                </div>
+                {% endif %}
+                {% if field.errors %}
+                <div class="text-danger small mt-1">
+                  {{ field.errors|striptags }}
+                </div>
+                {% endif %}
+              </div>
+              {% endfor %}
+            </div>
+
+            <!-- Image Management Section -->
+            <div class="row mt-4">
+              <div class="col-12">
+                <div class="card border-0 shadow-sm mb-4">
+                  <div class="card-header bg-light py-2">
+                    <h6 class="mb-0"><i class="fas fa-images me-2"></i>Product Images</h6>
+                  </div>
+                  <div class="card-body">
+                    <!-- Upload New Images -->
+                    <div class="mb-4">
+                      <label class="form-label small fw-semibold">Add More Images</label>
+                      <input type="file" name="images" class="form-control" multiple accept="image/*" id="image-upload">
+                      <div class="form-text">You can select multiple images at once</div>
+                    </div>
+                    
+                    <!-- Current Images with Delete Option -->
+                    {% if product.images.all %}
+                    <div class="mb-3">
+                      <label class="form-label small fw-semibold">Current Images</label>
+                      <div class="row g-2" id="current-images">
+                        {% for img in product.images.all %}
+                        <div class="col-md-3 col-6 mb-3 image-item" data-id="{{ img.id }}">
+                          <div class="position-relative">
+                            <img src="{{ img.image.url }}" class="img-thumbnail w-100" style="height: 150px; object-fit: cover;">
+                            <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 delete-image" data-id="{{ img.id }}">
+                              <i class="fas fa-trash"></i>
+                            </button>
+                          </div>
+                        </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Accordion Sections -->
+            <div class="row mt-2">
+              <div class="col-12">
+                <div class="card border-0 shadow-sm mb-4">
+                  <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0"><i class="fas fa-list me-2"></i>Product Details (Accordion Sections)</h6>
+                    <button type="button" class="btn btn-sm btn-primary" id="add-accordion">
+                      <i class="fas fa-plus me-1"></i> Add Section
+                    </button>
+                  </div>
+                  <div class="card-body">
+                    <div id="accordion-container">
+                      {% for accordion in product.accordions.all %}
+                      <div class="accordion-item mb-3 border rounded-2" data-id="{{ accordion.id }}">
+                        <div class="accordion-header bg-light p-2 d-flex justify-content-between align-items-center">
+                          <span class="fw-semibold">Section {{ forloop.counter }}</span>
+                          <button type="button" class="btn btn-sm btn-danger remove-accordion">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </div>
+                        <div class="accordion-body p-3">
+                          <div class="mb-3">
+                            <label class="form-label fw-semibold small">Title</label>
+                            <input type="text" name="accordion-title-{{ accordion.id }}" value="{{ accordion.name }}" class="form-control" required>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label fw-semibold small">Description</label>
+                            <textarea name="accordion-desc-{{ accordion.id }}" class="form-control" rows="4" required>{{ accordion.description }}</textarea>
+                          </div>
+                        </div>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4 gap-2">
+              <a href="{% url 'products' %}" class="btn btn-outline-secondary btn-sm px-4 shadow-sm">
+                <i class="fas fa-times me-1"></i>Cancel
+              </a>
+              <button type="submit" class="btn btn-warning btn-sm px-4 shadow-sm text-white">
+                <i class="fas fa-save me-1"></i>Update Product
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block styles %}
+<style>
+  .form-control, .form-select {
+    font-size: 0.875rem;
+    border-radius: 0.3rem;
+  }
+
+ 
+  .form-label {
+    font-size: 0.78rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .card-header h5 {
+    font-size: 1.1rem;
+  }
+
+  .input-group > .form-control,
+  .input-group > .form-select {
+    border-radius: 0.3rem !important;
+  }
+
+  .btn i {
+    font-size: 0.8rem;
+  }
+
+  .form-text {
+    font-size: 0.7rem;
+  }
+
+  .img-thumbnail {
+    transition: all 0.3s ease;
+  }
+
+  .delete-image {
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .accordion-item {
+    transition: all 0.3s ease;
+  }
+
+  .accordion-item:hover {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  }
+</style>
+{% endblock styles %}
+
+{% block scripts %}
+<script src="{% static 'js/tinymce/tinymce.min.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize TinyMCE for description fields
+    tinymce.init({
+        selector: 'textarea',
+        height: 300,
+        plugins: 'link image code',
+        toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright | link image',
+        menubar: false,
+        statusbar: false,
+    });
+
+    // Image deletion
+    document.getElementById('current-images').addEventListener('click', function(e) {
+        if (e.target.closest('.delete-image')) {
+            const imageId = e.target.closest('.delete-image').dataset.id;
+            const imageItem = e.target.closest('.image-item');
+            
+            // Create hidden input to mark image for deletion
+            const deleteInput = document.createElement('input');
+            deleteInput.type = 'hidden';
+            deleteInput.name = 'delete_images';
+            deleteInput.value = imageId;
+            document.getElementById('product-form').appendChild(deleteInput);
+            
+            // Remove image from display
+            imageItem.remove();
+        }
+    });
+
+    // Accordion management
+    const accordionContainer = document.getElementById('accordion-container');
+    const addAccordionBtn = document.getElementById('add-accordion');
+    let accordionCount = document.querySelectorAll('.accordion-item').length;
+
+    addAccordionBtn.addEventListener('click', function() {
+        const newId = Date.now(); // Temporary ID for new accordion
+        const newAccordion = document.createElement('div');
+        newAccordion.className = 'accordion-item mb-3 border rounded-2';
+        newAccordion.dataset.id = 'new-' + newId;
+        newAccordion.innerHTML = `
+            <div class="accordion-header bg-light p-2 d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">New Section</span>
+                <button type="button" class="btn btn-sm btn-danger remove-accordion">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="accordion-body p-3">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Title</label>
+                    <input type="text" name="new-accordion-title[]" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Description</label>
+                    <textarea name="new-accordion-desc[]" class="form-control" rows="4" required></textarea>
+                </div>
+            </div>
+        `;
+        accordionContainer.appendChild(newAccordion);
+        accordionCount++;
+    });
+
+    // Remove accordion section
+    accordionContainer.addEventListener('click', function(e) {
+        if (e.target.closest('.remove-accordion')) {
+            const accordionItem = e.target.closest('.accordion-item');
+            const accordionId = accordionItem.dataset.id;
+            
+            if (accordionId.startsWith('new-')) {
+                // Just remove new accordion that wasn't saved yet
+                accordionItem.remove();
+            } else {
+                // Create hidden input to mark existing accordion for deletion
+                const deleteInput = document.createElement('input');
+                deleteInput.type = 'hidden';
+                deleteInput.name = 'delete_accordions';
+                deleteInput.value = accordionId;
+                document.getElementById('product-form').appendChild(deleteInput);
+                
+                // Hide the accordion (don't remove completely so form submission works)
+                accordionItem.style.display = 'none';
+            }
+        }
+    });
+});
+</script>
+               <!-- End Container Fluid -->
+{% endblock scripts %}

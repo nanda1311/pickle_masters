@@ -1,0 +1,240 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title> product detail</title>
+{% endblock title %}
+    
+
+
+
+
+{% block content %}
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+          :root {
+            --primary-green: #d52727;
+            --secondary-green: #e2c43b;
+            --text-dark: #333;
+            --text-light: #666;
+            --background-light: #f5f5f5;
+            --border-color: #ddd;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+      
+      
+      
+      
+      
+      body {
+        background: #f4f4f4;
+        font-family: 'IBM Plex Sans', 'Arial', sans-serif;
+        line-height: 1.6;
+        color: var(--text-dark);
+}
+
+.privacy-container {
+  max-width: 1130px;
+  margin: 40px auto 0 auto;
+  padding: 32px 26px;
+  margin-top: 130px;}
+
+.privacy-title {
+  text-align: center;
+  font-size: 2em;
+  font-weight: 600;
+  color: #212121;
+  margin: 0 0 6px 0;
+  background-color: #d1d1d1;
+  border-radius: 5px;
+  letter-spacing: 0.02em;
+}
+
+.privacy-breadcrumb {
+  text-align: center;
+  font-size: 0.95em;
+  color: #797979;
+  margin-bottom: 30px;
+}
+
+.privacy-content h2 {
+  font-size: 1.18em;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.privacy-updated {
+  font-size: 0.98em;
+  color: #555;
+  margin-bottom: 14px;
+}
+
+.privacy-content p {
+  margin-bottom: 14px;
+  line-height: 1.7;
+}
+
+.privacy-content ol {
+  margin-left: 0;
+  padding-left: 18px;
+  font-size: 1em;
+  margin-bottom: 0;
+}
+
+.privacy-content li {
+  margin-bottom: 18px;
+  font-weight: 500;
+}
+
+.privacy-content ul {
+  margin-top: 5px;
+  margin-bottom: 0;
+  margin-left: 11px;
+  padding-left: 10px;
+  font-weight: 400;
+  font-size: 0.98em;
+  color: #393939;
+}
+
+.bold {
+  font-weight: 600;
+}
+
+
+
+</style>
+<body>
+    <main>
+
+
+
+<div class="privacy-container">
+  <h1 class="privacy-title">Privacy Policy</h1>
+  <div class="privacy-breadcrumb">Home / Privacy Policy</div>
+  <div class="privacy-content">
+    <h2>Privacy Policy</h2>
+    <div class="privacy-updated">Last Updated: July 10, 2025</div>
+    <p>
+      At Bata Stores (“we”, “us” or “our”), we value your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your data when you use our website or interact with our services.
+    </p>
+    <ol>
+      <li>
+        <strong>Information We Collect</strong>
+        <ul>
+          <li>
+            <span class="bold">Personal Information:</span>
+            Name, email address, phone number, shipping/billing address, and payment details provided during account creation, purchase, or customer support interaction.
+          </li>
+          <li>
+            <span class="bold">Non-Personal Information:</span>
+            Browsing data such as IP address, browser type, device info, and pages visited (via cookies).
+          </li>
+          <li>
+            <span class="bold">Unboxing Videos:</span>
+            Required for return claims; used only for processing returns.
+          </li>
+        </ul>
+      </li>
+      <li>
+        <strong>How We Use Your Information</strong>
+        <ul>
+          <li>To process and fulfill orders, including shipping and payments.</li>
+          <li>To confirm returns (including unboxing videos in case confirmation).</li>
+          <li>To send transactional status or service support alerts.</li>
+          <li>To communicate offers, unless you request not to.</li>
+          <li>To comply with legal obligations and protect legal rights.</li>
+        </ul>
+      </li>
+      <li>
+        <strong>How We Share Your Information</strong>
+        <ul>
+          <li>We do not sell or rent your personal information. We may share data with:</li>
+          <li>
+            <span class="bold">Service Providers:</span>
+            Third-party vendors (e.g., payment gateways, couriers), bound by confidentiality.
+          </li>
+          <li>
+            <span class="bold">Legal Authorities:</span>
+            Where required to comply with the law or enforce our rights.
+          </li>
+          <li>
+            <span class="bold">Business Transfers:</span>
+            In case of acquisition or restructuring, your data may be transferred.
+          </li>
+        </ul>
+      </li>
+      <li>
+        <strong>Cookies and Tracking Technologies</strong>
+        <ul>
+          <li>We use cookies to enhance your experience and analyze site traffic.</li>
+          <li>You can customize cookie access via browser settings. Disabling may affect functionality.</li>
+        </ul>
+      </li>
+      <li>
+        <strong>Data Security</strong>
+        <ul>
+          <li>We use security protocols like SSL encryption and secure hosting.</li>
+          <li>However, no method is fully secure; we cannot guarantee absolute safety.</li>
+        </ul>
+      </li>
+      <li>
+        <strong>Your Rights</strong>
+        <ul>
+          <li>Depending on local law, you may have the right to:</li>
+          <li>Access, update, or delete your personal data.</li>
+          <li>Opt out of certain promotional communications.</li>
+          <li>Contact us to process your information.</li>
+          <li>For any privacy rights or issues, contact us at <span class="bold">[insert email address]</span>.</li>
+        </ul>
+      </li>
+      <li>
+        <strong>Data Retention</strong>
+        <ul>
+          <li>We retain your information only as long as needed for our purposes or as required by law.</li>
+          <li>Most transactional data is stored for 30 days after return processing.</li>
+        </ul>
+      </li>
+      <li>
+        <strong>Third-Party Links</strong>
+        <ul>
+          <li>We may link to other websites. Their privacy practices are their responsibility; please review their policies before sharing data.</li>
+        </ul>
+      </li>
+      <li>
+        <strong>Children’s Privacy</strong>
+        <ul>
+          <li>Our services are not intended for those under 18. We do not knowingly collect data from children without parental consent.</li>
+        </ul>
+      </li>
+      <li>
+        <strong>Changes to This Privacy Policy</strong>
+        <ul>
+          <li>We may update this privacy policy. Please check the latest version on our website. Continued use implies your agreement.</li>
+        </ul>
+      </li>
+      <li>
+        <strong>Contact Us</strong>
+        <ul>
+          <li>Email: batastoresdesigners@gmail.com</li>
+          <li>Phone: +91 8073479745</li>
+          <li>Address: Bata Stores designers, Sharvil Layout Main Rd, Muniswamy Reddy Layout, Dr Ambedkar Nagar, Ramamurthy Nagar, Bengaluru, Karnataka 560016</li>
+        </ul>
+      </li>
+    </ol>
+    <p>By using our website, you acknowledge that you have read and understood this Privacy Policy.</p>
+  </div>
+</div>
+
+
+    </main>
+
+{% endblock content %}

@@ -1,0 +1,531 @@
+@import url("https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap");
+:root {
+    --primary-green: #d52727;
+    --secondary-green: #e2c43b;
+    --text-dark: #333;
+    --text-light: #666;
+    --background-light: #f5f5f5;
+    --border-color: #ddd;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Jost", sans-serif;
+    line-height: 1.6;
+    color: var(--text-dark);
+    background-color: #fff;
+}
+
+.container1 {
+    max-width: 1100px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    display: flex;
+    padding: 30px 0;
+}
+.sidebar {
+    min-width: 260px;
+    padding: 0 30px 0 40px;
+    border-right: 1px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.sidebar h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+.sidebar button {
+    background: #fff;
+    border: 2px solid #d88641;
+    color: #d88641;
+    font-size: 1.1rem;
+    width: 100%;
+    font-weight: 600;
+    padding: 12px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition:
+        background 0.2s,
+        color 0.2s;
+}
+.sidebar button.active,
+.sidebar button:hover {
+    background: #ce905dff;
+    color: #ffffffff;
+}
+.main-content {
+    flex: 1;
+    padding: 0 40px;
+    width: 100%;
+}
+.section {
+    display: none;
+    animation: fadeIn 0.3s;
+}
+.section.active {
+    display: block;
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    margin-top: 28px;
+}
+.card {
+    flex: 1 1 220px;
+    max-width: 280px;
+    min-width: 220px;
+    background: #f5fbff;
+    border-radius: 14px;
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 155px;
+    box-sizing: border-box;
+    transition: box-shadow 0.2s;
+}
+.card .icon {
+    background: #e3f0fa;
+    border-radius: 50%;
+    width: 68px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.4rem;
+    margin-bottom: 18px;
+}
+.card .label {
+    font-size: 1.15rem;
+    color: #000;
+    text-align: center;
+}
+.card.cart {
+    background: #f0f7fc;
+}
+.card.cart .icon {
+    background: #cce6fc;
+}
+.card.wishlist {
+    background: #e6fcea;
+}
+.card.wishlist .icon {
+    background: #a8f0c9;
+}
+.card.coupons {
+    background: #fde8ea;
+}
+.card.coupons .icon {
+    background: #ffccd5;
+}
+.card.orders {
+    background: #fef4e7;
+}
+.card.orders .icon {
+    background: #ffe2b8;
+}
+.orders-section h2,
+.dashboard-section h2,
+.addresses-section h2,
+.update-section h2 {
+    margin-top: 0;
+    font-size: 2rem;
+    font-weight: 700;
+}
+.orders-table-wrapper {
+    margin-top: 28px;
+    background: #fff;
+    border-radius: 10px;
+    overflow-x: auto;
+}
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.orders-table th,
+.orders-table td {
+    padding: 14px 18px;
+    text-align: left;
+    font-size: 1.07rem;
+}
+.orders-table th {
+    font-weight: 700;
+    border-bottom: 2px solid #eee;
+    background: #fff;
+}
+.orders-table td {
+    border-bottom: 1px solid #ececec;
+    font-weight: 400;
+}
+.no-orders {
+    text-align: center;
+    color: #222;
+    font-size: 1.12rem;
+    padding: 36px 0;
+    background: #fff;
+}
+.addresses-list,
+.update-section form {
+    margin-top: 36px;
+    font-size: 1.07rem;
+}
+.addresses-list li {
+    margin-bottom: 20px;
+    list-style: circle;
+}
+.update-section form label {
+    display: block;
+    font-weight: 500;
+    margin: 12px 0 5px;
+}
+.update-section form input {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 12px;
+    width: 100%;
+    font-size: 1rem;
+}
+.update-section form button {
+    padding: 8px 22px;
+    background: #d88641;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.addresses-section button {
+    padding: 8px 22px;
+    background: #d88641;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.orders-table td button {
+    padding: 8px 22px;
+    background: #d88641;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.addresses-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.address-card {
+    position: relative;
+    flex: 1 1 350px;
+    max-width: 400px;
+}
+
+.address-card input[type="radio"] {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    transform: scale(1.3);
+    cursor: pointer;
+    accent-color: #000;
+}
+
+.address-info {
+    display: block;
+    background: #fff;
+    padding: 25px 25px 20px 50px;
+    border-radius: 12px;
+    border: 2px solid #eee;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.address-card input[type="radio"]:checked + .address-info {
+    border-color: #d88641;
+    box-shadow: 0 0 10px rgba(26, 35, 126, 0.2);
+}
+
+.address-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.address-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.tag {
+    background: #d88641;
+    color: #fff;
+    font-size: 13px;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+.address-info p {
+    margin: 5px 0;
+    color: #555;
+    font-size: 15px;
+}
+
+.address-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.address-actions button {
+    flex: 1;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: #d88641;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    color: #fff;
+}
+
+.address-actions button i {
+    margin-right: 6px;
+}
+
+.edit-btn:hover {
+    background: #e0ebff;
+    color: #d88641;
+}
+
+.remove-btn:hover {
+    background: #ffe0e0;
+    color: #c62828;
+}
+
+#addAddressBtn {
+    margin-top: 25px;
+    background: #d88641;
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+#addAddressBtn:hover {
+    background: #d88641;
+}
+
+@media (max-width: 500px) {
+    .container1 {
+        max-width: 100%;
+        margin: 20px 10px;
+        padding: 0;
+        flex-direction: column; 
+        box-shadow: none; 
+        border-radius: 0;
+    }
+
+    .sidebar {
+        min-width: 100%;
+        padding: 35px 10px;
+        border-right: none;
+        border-bottom: 1px solid #f0f0f0; 
+        display: flex; 
+        flex-direction: row;
+        overflow-x: auto; 
+        gap: 10px; 
+        white-space: nowrap; 
+    }
+    .sidebar h2 {
+        display: none;
+    }
+
+    .sidebar button {
+        flex-shrink: 0;
+        font-size: 0.9rem;
+        padding: 8px 15px;
+        border-radius: 20px;
+        margin-bottom: 0;
+        border-width: 1px;
+        margin-top: 20px; 
+    }
+
+    .main-content {
+        padding: 20px 15px;
+        width: 100%;
+    }
+
+    .orders-section h2,
+    .dashboard-section h2,
+    .addresses-section h2,
+    .update-section h2 {
+        font-size: 1.6rem;
+        margin-bottom: 20px;
+    }
+    .cards {
+        flex-direction: column; 
+        gap: 15px; 
+    }
+
+    .card {
+        flex: 1 1 100%; 
+        max-width: 100%;
+        padding: 20px 15px;
+        min-height: auto;
+    }
+
+    .card .icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+
+    .card .label {
+        font-size: 1rem;
+    }
+
+    .orders-table-wrapper {
+        margin-top: 15px;
+        overflow-x: auto; 
+        -webkit-overflow-scrolling: touch; 
+    }
+
+    .orders-table {
+        min-width: 600px; 
+    }
+
+    .orders-table th,
+    .orders-table td {
+        padding: 10px 12px; 
+        font-size: 0.9rem;
+    }
+
+    .orders-table td button {
+        padding: 6px 14px;
+        font-size: 0.9rem;
+        margin-top: 0;
+    }
+
+    .update-section form label {
+        margin: 10px 0 3px;
+    }
+
+    .update-section form input {
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+    }
+
+    .update-section form button {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .update-section .container1 > div {
+        flex-direction: column; 
+        gap: 0;
+    }
+
+    .update-section .container1 > div > div {
+        width: 100% !important;
+    }
+
+
+    .addresses-grid {
+        flex-direction: column; 
+        gap: 15px;
+    }
+
+    .address-card {
+        max-width: 100%; 
+        flex: 1 1 100%;
+    }
+
+    .address-info {
+        padding: 20px 20px 15px 45px; 
+    }
+
+    .address-card input[type="radio"] {
+        top: 25px;
+        left: 15px;
+        transform: scale(1.1);
+    }
+
+    .address-actions {
+        margin-top: 10px;
+    }
+
+    .address-actions button {
+        padding: 8px;
+        font-size: 0.9rem;
+        margin: 2px;
+    }
+
+    #addAddressBtn {
+        width: 100%;
+        padding: 10px;
+        margin-top: 15px;
+    }
+
+
+    #addressModal > div {
+        width: 95vw;
+        margin: 10px;
+    }
+
+    #addressModal input {
+        padding: 8px 10px !important;
+        height: auto !important;
+        font-size: 0.95rem;
+    }
+
+    #addressModal button[type="submit"] {
+        width: 100%;
+        float: none;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 500px) {
+    .update-section .gender-option {
+        font-size: 0.7em !important;
+        padding: 8px 6px !important;
+    }
+
+    .update-section ul#genderOptions {
+        margin-bottom: 10px; 
+    }
+}

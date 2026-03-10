@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+
+<head>
+     <!-- Title Meta -->
+     <meta charset="utf-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta name="description" content="A fully responsive premium admin dashboard template" />
+     <meta name="author" content="Techzaa" />
+     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+     <!-- App favicon -->
+     <link rel="shortcut icon" href="{% static 'backend/assets/images/favicon.ico' %}">
+
+     <!-- Vendor css (Require in all Page) -->
+     <link href="{% static 'backend/assets/css/vendor.min.css' %}" rel="stylesheet" type="text/css" />
+
+     <!-- Icons css (Require in all Page) -->
+     <link href="{% static 'backend/assets/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+
+     <!-- App css (Require in all Page) -->
+     <link href="{% static 'backend/assets/css/app.min.css' %}" rel="stylesheet" type="text/css" />
+
+     <!-- Theme Config js (Require in all Page) -->
+     <script src="{% static 'backend/assets/js/config.js' %}"></script>
+
+     <script src="https://code.iconify.design/iconify-icon/3.0.0/iconify-icon.min.js"></script>
+
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+     
+     
+     {% block title %}
+     
+     {% endblock title %}
+
+</head>
+
+
+     <!-- START Wrapper -->
+     <div class="wrapper">
+
+
+          <!-- ========== Topbar Start ========== -->
+          <header class="topbar">
+               <div class="container-fluid">
+                    <div class="navbar-header">
+                         <div class="d-flex align-items-center">
+                              <!-- Menu Toggle Button -->
+                              <div class="topbar-item">
+                                   <button type="button" class="button-toggle-menu me-2">
+                                        <iconify-icon icon="solar:hamburger-menu-broken" class="fs-24 align-middle"></iconify-icon>
+                                   </button>
+                              </div>
+
+                              <!-- Menu Toggle Button -->
+                              <div class="topbar-item">
+                                   <h4 class="fw-bold topbar-button pe-none text-uppercase mb-0">{% block tasktitle %}{% endblock tasktitle %}</h4>
+                              </div>
+                         </div>
+
+                         <div class="d-flex align-items-center gap-1">
+
+                              <!-- Theme Color (Light/Dark) -->
+                              {% comment %} <div class="topbar-item">
+                                   <button type="button" class="topbar-button" id="light-dark-mode">
+                                        <iconify-icon icon="solar:moon-bold-duotone" class="fs-24 align-middle"></iconify-icon>
+                                   </button>
+                              </div> {% endcomment %}
+
+                              <!-- Notification -->
+                              <div class="dropdown topbar-item">
+                                   <button type="button" class="topbar-button position-relative" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <iconify-icon icon="solar:bell-bing-bold-duotone" class="fs-24 align-middle"></iconify-icon>
+                                        <span class="position-absolute topbar-badge fs-10 translate-middle badge bg-danger rounded-pill">3<span class="visually-hidden">unread messages</span></span>
+                                   </button>
+                                   <div class="dropdown-menu py-0 dropdown-lg dropdown-menu-end" aria-labelledby="page-header-notifications-dropdown">
+                                        <div class="p-3 border-top-0 border-start-0 border-end-0 border-dashed border">
+                                             <div class="row align-items-center">
+                                                  <div class="col">
+                                                       <h6 class="m-0 fs-16 fw-semibold"> Notifications</h6>
+                                                  </div>
+                                                  <div class="col-auto">
+                                                       <a href="javascript: void(0);" class="text-dark text-decoration-underline">
+                                                            <small>Clear All</small>
+                                                       </a>
+                                                  </div>
+                                             </div>
+                                
+                                   
+                                   </div>
+                              </div>
+                              <!-- App Search-->
+                              <form class="app-search d-none d-md-block ms-2">
+                                   <div class="position-relative">
+                                        <input type="search" class="form-control" placeholder="Search..." autocomplete="off" value="">
+                                        <iconify-icon icon="solar:magnifer-linear" class="search-widget-icon"></iconify-icon>
+                                   </div>
+                              </form>
+                         </div>
+                    </div>
+               </div>
+          </header>
+
+          <!-- ========== App Menu Start ========== -->
+          <div class="main-nav">
+               <!-- Sidebar Logo -->
+               <div class="logo-box">
+                    <a href="{% url 'dashboard' %}" class="logo-dark">
+                         <img src="{% static 'backend/assets/images/logo.png'%}" class="logo-sm" alt="logo sm">
+                    </a>
+
+               </div>
+
+
+
+               <div class="scrollbar" data-simplebar>
+                    <ul class="navbar-nav" id="navbar-nav">
+
+                         <li class="menu-title">General</li>
+
+                         <li class="nav-item">
+                              <a class="nav-link" href="{% url 'dashboard' %}">
+                                   <span class="nav-icon">
+                                        <iconify-icon icon="solar:widget-5-bold-duotone"></iconify-icon>
+                                   </span>
+                                   <span class="nav-text"> Dashboard </span>
+                              </a>
+                         </li>
+
+                         
+                         <li class="nav-item">
+                              <a class="nav-link menu-arrow" href="#sidebarCategory" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarCategory">
+                                   <span class="nav-icon">
+                                        <iconify-icon icon="solar:clipboard-list-bold-duotone"></iconify-icon>
+                                   </span>
+                                   <span class="nav-text"> Category </span>
+                              </a>
+                              <div class="collapse" id="sidebarCategory">
+                                   <ul class="nav sub-navbar-nav">
+                                        
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="{% url 'categories' %}">List</a>
+                                        </li>
+
+                                   </ul>
+                              </div>
+                         </li>
+                         <li class="nav-item">
+                              <a class="nav-link menu-arrow" href="#sidebarProducts" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarProducts">
+                                   <span class="nav-icon">
+                                        <iconify-icon icon="solar:t-shirt-bold-duotone"></iconify-icon>
+                                   </span>
+                                   <span class="nav-text"> Products </span>
+                              </a>
+                              <div class="collapse" id="sidebarProducts">
+                                   <ul class="nav sub-navbar-nav">
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="{% url 'products' %}">List</a>
+                                        </li>
+                                        
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="{% url 'create_product' %}">Create</a>
+                                        </li>
+                                   </ul>
+                              </div>
+                         </li>
+                         <li class="nav-item">
+                              <a class="nav-link menu-arrow" href="#sidebarOrders" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarOrders">
+                                   <span class="nav-icon">
+                                        <iconify-icon icon="solar:bag-smile-bold-duotone"></iconify-icon>
+                                   </span>
+                                   <span class="nav-text"> Orders </span>
+                              </a>
+                              <div class="collapse" id="sidebarOrders">
+                                   <ul class="nav sub-navbar-nav">
+
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="{% url 'orders_list'%}">List</a>
+                                        </li>
+                                    
+                                   </ul>
+                              </div>
+                         </li>
+                         <li class="nav-item">
+                              <a class="nav-link menu-arrow" href="#sidebarPurchases" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarPurchases">
+                                   <span class="nav-icon">
+                                        <iconify-icon icon="solar:card-send-bold-duotone"></iconify-icon>
+                                   </span>
+                                   <span class="nav-text"> Payments </span>
+                              </a>
+                              <div class="collapse" id="sidebarPurchases">
+                                   <ul class="nav sub-navbar-nav">
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="{% url 'purchase_list'%}">List</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="{% url 'purchase_order'%}">Order</a>
+                                        </li>
+                                        <li class="sub-nav-item">
+                                             <a class="sub-nav-link" href="{% url 'purchase_returns'%}">Return</a>
+                                        </li>
+                                   </ul>
+                              </div>
+                         </li>
+<li class="nav-item">
+    <a class="nav-link" href="#" onclick="confirmLogout(event)">
+        <span class="nav-text">logout</span>
+    </a>
+</li>
+
+<script>
+function confirmLogout(event) {
+    event.preventDefault();  // Prevent immediate navigation
+    
+    // Show confirmation dialog
+    if (confirm('Are you sure you want to logout?')) {
+        // If user confirms, redirect to logout URL
+        window.location.href = "{% url 'adminlogout' %}";
+    }
+    // If user cancels, do nothing
+}
+</script>
+                    </ul>
+               </div>
+          </div>
+     </div>
+</div>
+
+
+          {% block content %} {% endblock content %}
+
+          <footer class="footer">
+               <div class="container-fluid">
+                    <div class="row">
+                         <div class="col-12 text-center">
+                              <script>document.write(new Date().getFullYear())</script> &copy; Pickle Masters. Crafted by <iconify-icon icon="iconamoon:heart-duotone" class="fs-18 align-middle text-danger"></iconify-icon> <a href="https://thinkb.agency/" class="fw-bold footer-text" target="_blank">ThinkB</a><span style="color: red; font-weight: 800;">.</span>
+                         </div>
+                    </div>
+               </div>
+          </footer>
+
+
+     <!-- Vendor Javascript (Require in all Page) -->
+     <script src="{% static 'backend/assets/js/vendor.js' % }"></script>
+
+     <!-- App Javascript (Require in all Page) -->
+     <script src="{% static 'backend/assets/js/app.js' % }"></script>
+
+     <!-- Vector Map Js -->
+     <script src="{% static 'backend/assets/vendor/jsvectormap/js/jsvectormap.min.js' % }"></script>
+     <script src="{% static 'backend/assets/vendor/jsvectormap/maps/world-merc.js' % }"></script>
+     <script src="{% static 'backend/assets/vendor/jsvectormap/maps/world.js' % }"></script>
+
+     <!-- Dashboard Js -->
+     <script src="{% static 'backend/assets/js/pages/dashboard.js' % }"></script>
+     
+     <script>
+          document.title = document.title.toUpperCase();
+     </script>
+     
+    {% block script %}
+
+    {% endblock script %}
+</html>

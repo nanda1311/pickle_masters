@@ -1,0 +1,781 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title> product detail</title>
+{% endblock title %}
+    
+
+
+
+
+{% block content %}
+
+
+
+<main>
+    
+    <body>
+        <div style="margin-top: 101px;"  class="team1-photo-wrapper">
+            <img src="{% static 'frontend/images/banner_for_about_us_page.png' %}"  class="team1-photo">
+            <h1 class="image-text">Home / About Us</h1>
+        </div>
+        
+        <section class="about-section">
+<div class="container">
+            
+            <!-- Founder Card -->
+            <div class="container1">
+              <div class="team2-photo-wrapper">
+                <img src="{% static 'frontend/images/about.jpeg' %}" class="second-photo">
+                <div class="vision-box">
+                  <h3>The Founder's Vision</h3>
+                  <p>Chiranjeevi is an expert at making pickles. He makes each jar using old family recipes passed down for generations. He learned from Andhra Pradesh's food traditions, where strong spices and fresh ingredients create tasty flavors. He started this business to share that real taste with everyone who wants true homemade goodness.</p>
+                </div>
+              </div>
+            </div>
+            
+            
+            <!-- Two Column Layout -->
+            <div class="founder-card">
+              <div class="founder-content">
+                <span class="since">Since 2020</span>
+                <h2>Chiranjeevi Venkata Subbaraju</h2>
+                <p class="founder-desc">Started our pickle company to share the rich tradition of Andhra pickles with real, authentic taste.</p>
+              </div>
+            </div>
+            <div class="two-col">
+              <!-- Expertise -->
+              <div class="col">
+                <h3>Expertise in Authenticity</h3>
+                <p>With years of hands-on experience, Chiranjeevi makes every batch carefully—balancing hot chilies, sour tamarind, and fresh vegetables. No shortcuts or chemicals; only good quality, local ingredients keep the pickles crunchy and tasty. His methods preserve the true spirit of Andhra pickles, making them a favorite with meals and snacks.</p>
+              </div>
+              
+              <!-- Success -->
+              <div class="col">
+                <h3>Growing Success Since 2020</h3>
+                <p>Starting during tough times, the business has grown through loyal customers who love the great taste. Today, we deliver across the country, spreading Chiranjeevi's dream of bringing real Andhra taste to every home. Join thousands enjoying our tradition in every spicy, tasty bite.</p>
+              </div>
+            </div>
+
+            <!-- Bottom Tagline -->
+            <div class="tagline">
+              <p> Real Andhra Pickles — Made with Love, Saved with Tradition </p>
+            </div>
+          </div>
+
+            <style>
+              /* Simple, clean, basic design */
+              .about-section {
+                display: block;
+                background-color: #faf7f2;
+                color: #2c2c2c;
+                padding: 3rem 1.5rem;
+                line-height: 1.6;
+
+              }
+
+              .container {
+                max-width: 1000px;
+                margin: 0 auto;
+              }
+
+              .page-title {
+                font-size: 2.5rem;
+                font-weight: 500;
+                text-align: center;
+                color: #b34b1f;
+                margin-bottom: 2.5rem;
+                padding-bottom: 0.75rem;
+                border-bottom: 2px solid #e0c9b0;
+                letter-spacing: 1px;
+              }
+
+              /* Founder Card */
+              .founder-card {
+                background-color: #ffffff;
+                border-radius: 12px;
+                padding: 2rem;
+                margin-bottom: 2rem;
+                margin-top: 2rem;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                border-left: 6px solid #c45d2c;
+                border-right: 6px solid #c45d2c;
+              }
+
+              .since {
+                display: inline-block;
+                background-color: #c45d2c;
+                color: white;
+                padding: 0.3rem 1.2rem;
+                border-radius: 25px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                letter-spacing: 1px;
+                margin-bottom: 1rem;
+              }
+
+              .founder-card h2 {
+                font-size: 2rem;
+                font-weight: 600;
+                color: #1f1f1f;
+                margin-bottom: 0.75rem;
+              }
+
+              .founder-desc {
+                font-size: 1.2rem;
+                color: #4a4a4a;
+                font-style: italic;
+                border-top: 1px solid #e9d9c9;
+                padding-top: 1rem;
+              }
+
+              /* Vision Box */
+              .vision-box {
+                background-color: #fff7ed;
+                padding: 2rem;
+                border-radius: 12px;
+                margin-bottom: 2rem;
+                border: 1px solid #f0d5bc;
+              }
+
+              .vision-box h3 {
+                font-size: 1.8rem;
+                color: #b34b1f;
+                margin-bottom: 1rem;
+                font-weight: 500;
+              }
+
+              .vision-box p {
+                font-size: 1.1rem;
+                color: #3e3e3e;
+              }
+
+              /* Two Column */
+              .two-col {
+                display: flex;
+                gap: 2rem;
+                margin-bottom: 2.5rem;
+              }
+
+              .col {
+                flex: 1;
+                background: white;
+                padding: 1.8rem;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+                border: 1px solid #f0e0d0;
+              }
+
+              .col h3 {
+                font-size: 1.6rem;
+                color: #b34b1f;
+                margin-bottom: 1.2rem;
+                font-weight: 500;
+                border-left: 4px solid #c45d2c;
+                padding-left: 0.8rem;
+              }
+
+              .col p {
+                color: #444;
+                font-size: 1rem;
+              }
+
+              /* Tagline */
+              .tagline {
+                text-align: center;
+                background: #e7d9cb;
+                padding: 1rem;
+                border-radius: 50px;
+                margin-top: 1rem;
+              }
+
+              .tagline p {
+                font-size: 1.2rem;
+                font-weight: 500;
+                color: #5d3e28;
+                letter-spacing: 0.5px;
+              }
+
+              /* Mobile */
+              @media (max-width: 700px) {
+                .two-col {
+                  flex-direction: column;
+                  gap: 1.5rem;
+                }
+                
+                .founder-card h2 {
+                  font-size: 1.6rem;
+                }
+                
+                .page-title {
+                  font-size: 2rem;
+                }
+              }
+            </style>
+        </section>
+
+<section class="reviews-section">
+  <h2 style="display:flex; justify-content:center; margin-bottom:15px;">Testimonials</h2>
+  <div class="reviews-carousel">
+    <img class="carousel-arrow left" src="{% static 'frontend/images/left.png'%}" alt="Left Arrow" />
+    
+    <div class="review-card">
+      <div class="review-card-header">
+
+        <div class="review-stars">
+          <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+        </div>
+        <span class="review-date">3 days ago</span>
+      </div>
+      <div class="review-text">These pickles deliver perfect crunch and tangy spice in every bite. My new kitchen essential for meals and snacks, highly recommend to everyone</div>
+      <div class="review-user">
+        <div class="avatar"><span>👤</span></div>
+        <span class="review-name">Subramanya</span>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-card-header">
+        <div class="review-stars">
+          <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+        </div>
+        <span class="review-date">1 week ago</span>
+      </div>
+      <div class="review-text">Outstanding bold flavors with authentic Indian spices make these pickles unbeatable. Elevates rice, curd, and parathas effortlessly, my family devours them daily now!</div>
+      <div class="review-user">
+        <div class="avatar"><span>👤</span></div>
+        <span class="review-name">Lakshmi</span>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-card-header">
+        <div class="review-stars">
+          <span>★</span><span>★</span><span>★</span><span>★</span><span style="color:#FFC10733;">★</span>
+        </div>
+        <span class="review-date">2 weeks ago</span>
+      </div>
+      <div class="review-text">Grandma's recipe vibes in every jar: fresh, zesty, and addictive. Perfect homemade taste that keeps us reaching for more at every meal.</div>
+      <div class="review-user">
+        <div class="avatar"><span>👤</span></div>
+        <span class="review-name">Venkatesh</span>
+      </div>
+      
+    </div>
+
+
+    <div class="review-card">
+      <div class="review-card-header">
+        <div class="review-stars">
+          <span>★</span><span>★</span><span>★</span><span>★</span><span style="color:#FFC10733;">★</span>
+        </div>
+        <span class="review-date">2 weeks ago</span>
+      </div>
+      <div class="review-text">The ideal spicy kick without overpowering heat—pairs perfectly with everything. Crunchy texture and rich taste make these my go-to snack choice always.</div>
+      <div class="review-user">
+        <div class="avatar"><span>👤</span></div>
+        <span class="review-name">Hari Krishna</span>
+      </div>
+      
+    </div>
+
+
+    <div class="review-card">
+      <div class="review-card-header">
+        <div class="review-stars">
+          <span>★</span><span>★</span><span>★</span><span>★</span><span style="color:#FFC10733;">★</span>
+        </div>
+        <span class="review-date">2 weeks ago</span>
+      </div>
+      <div class="review-text">Transforms ordinary lunches into flavorful feasts with their juicy crunch. Authentic spices and freshness make every bite a delightful, satisfying experience now</div>
+      <div class="review-user">
+        <div class="avatar"><span>👤</span></div>
+        <span class="review-name">Mohan Kumar</span>
+      </div>
+      
+    </div>
+
+
+    <div class="review-card">
+      <div class="review-card-header">
+        <div class="review-stars">
+          <span>★</span><span>★</span><span>★</span><span>★</span><span style="color:#FFC10733;">★</span>
+        </div>
+        <span class="review-date">2 weeks ago</span>
+      </div>
+      <div class="review-text">Staple in our home: tangy, fresh pickles bursting with real flavor. Unmatched quality and taste that beats every store-bought option easily</div>
+      <div class="review-user">
+        <div class="avatar"><span>👤</span></div>
+        <span class="review-name">Bharath Ram</span>
+      </div>
+      
+    </div>
+
+
+    <div class="review-card">
+      <div class="review-card-header">
+        <div class="review-stars">
+          <span>★</span><span>★</span><span>★</span><span>★</span><span style="color:#FFC10733;">★</span>
+        </div>
+        <span class="review-date">2 weeks ago</span>
+      </div>
+      <div class="review-text">Can't stop snacking on these crunchy, spicy delights—pure perfection. Homemade goodness shines through in every flavorful, irresistible jar we open</div>
+      <div class="review-user">
+        <div class="avatar"><span>👤</span></div>
+        <span class="review-name">Javid Khan</span>
+      </div>
+      
+    </div>
+
+    <div class="review-card">
+      <div class="review-card-header">
+        <div class="review-stars">
+          <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+        </div>
+        <span class="review-date">1 month ago</span>
+      </div>
+      <div class="review-text">Elevates every Indian meal with vibrant spice and crisp texture. Fresh ingredients ensure top-notch taste we crave and reorder without hesitation.</div>
+      <div class="review-user">
+        <div class="avatar"><span>👤</span></div>
+        <span class="review-name">Rakesh</span>
+      </div>
+      
+    </div>
+
+    <div class="review-card">
+      <div class="review-card-header">
+        <div class="review-stars">
+          <span>★</span><span>★</span><span>★</span><span>★</span><span style="color:#FFC10733;">★</span>
+        </div>
+        <span class="review-date">2 weeks ago</span>
+      </div>
+      <div class="review-text">Instant love for these juicy, tangy pickles packed with bold spice. Perfect crunch and authentic flavor make them our household favorite forever.</div>
+      <div class="review-user">
+        <div class="avatar"><span>👤</span></div>
+        <span class="review-name">Prakash</span>
+      </div>
+      
+    </div>
+
+    <img class="carousel-arrow right" src="{% static 'frontend/images/arrow-right.png'%}" alt="Right Arrow" />
+  </div>
+
+</section> 
+
+        
+
+
+    </div>
+</body>
+
+
+
+    </main>
+    
+    
+        {% block style %}
+        <style>
+  
+header p {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #4CAF50; 
+    margin-bottom: 20px;
+}
+
+.container1{
+    background-color: #f1e3db;
+    margin-top: -27px;
+    border-radius: 12px;
+    padding: 23px;
+}
+
+.team2-photo-wrapper {
+    display: flex;
+    align-items: center; 
+    gap: 20px; 
+    max-width: 800px; 
+    margin: 0 auto;
+    border-radius: 8px;
+}
+.team2-photo-wrapper img {
+    width: 40%;
+    border-radius: 12px;
+}
+.team2-photo-wrapper p {
+    flex-grow: 1; 
+    line-height: 1.6;
+}
+.second-photo{
+    width: 38%;
+    margin-bottom: 36px;
+    height: 407px;
+    margin-top: 17px;
+
+}
+
+.team1-photo-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.team1-photo {
+    display: block;
+}
+
+.team1-photo-wrapper h1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white; 
+    text-align: center;
+    font-size: 3em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); 
+    z-index: 10;
+}
+.grandma-section {
+    margin-bottom: 40px;
+}
+
+.grandma-image-wrapper {
+    width: 100%;
+    margin-bottom: 20px;
+    text-align: center; 
+}
+
+.grandma-photo {
+    width: 100%;
+    max-width: 400px;
+    display: block;
+    margin: 0 auto;
+}
+
+.image-caption {
+    text-align: center;
+    font-style: italic;
+    color: #555;
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+
+.grandma-section p,
+.questions-and-vision p {
+    margin-bottom: 15px;
+    text-align: justify;
+}
+strong {
+    font-weight: bold;
+}
+
+
+
+
+.vm-container {
+    display: flex;
+    justify-content: center; 
+    max-width: 900px;
+    margin: 50px auto; 
+    padding: 0 20px;
+}
+
+.vm-card {
+    flex: 1; 
+    padding: 30px 40px;
+    line-height: 1.6;
+}
+
+.vm-vision {
+    border-right: 1px solid #e0e0e0; 
+}
+
+.vm-title {
+    color: #38761d; 
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.vm-icon {
+    font-size: 1.2em; 
+    margin-right: 10px;
+
+}
+
+.vm-text {
+    color: #333;
+    font-size: 1rem;
+    max-width: 350px; 
+}
+.cta a {
+    color: #E91E63; 
+    text-decoration: none;
+    font-weight: bold;
+    border-bottom: 2px dotted #E91E63;
+    padding-bottom: 2px;
+}
+
+.cta a:hover {
+    color: #C2185B;
+    border-bottom-style: solid;
+}
+
+.team-section {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.team-photo-wrapper {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.team1-photo-wrapper {
+    width: 100%;
+}
+
+.team-photo {
+    width: 100%;
+    max-width: 550px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.team1-photo {
+    width: 100%;
+    height: 320px;
+    display: block;
+    margin: 0 auto;
+}
+
+.team-section p {
+    margin: 5px 0;
+    font-size: 0.9em;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0));
+    margin: 40px 0;
+}
+
+
+
+
+.reviews-section {
+  background-color: #f5f5f5;
+  padding: 55px 0 52px 0;
+  width: 100%;
+  min-height: 100px;
+}
+
+.reviews-carousel {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 32px;
+  position: relative;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+.carousel-arrow {
+  background: #e4f0ee;
+  color: #d52a28;
+  border: none;
+  width: 42px;
+  height: 42px;
+  font-size: 2.3rem;
+  border-radius: 50%;
+  cursor: pointer;
+  align-self: center;
+  transition: background 0.2s;
+  position: relative;
+  top: 0;
+}
+.carousel-arrow.left {
+  margin-right: -6px;
+}
+.carousel-arrow.right {
+  margin-left: -6px;
+}
+
+.review-card {
+  background: #fff;
+  padding: 30px 28px 24px 28px;
+  border-radius: 18px;
+  box-shadow: 0 4px 20px rgba(60, 33, 82, 0.07);
+  min-width: 350px;
+  max-width: 380px;
+  flex: 1;
+  height: 280px !important;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+  transition: box-shadow 0.2s;
+}
+.review-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.review-stars span {
+  color: #FFC107;
+  font-size: 1.36rem;
+  margin-right: 2px;
+}
+.review-date {
+  color: #949494;
+  font-size: 1.01rem;
+}
+.review-user {
+  display: flex;
+  align-items: center;
+  margin: 15px 0 6px 0;
+  gap: 10px;
+}
+.avatar {
+  background: #ecf0f3;
+  border-radius: 50%;
+  height: 38px;
+  width: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.44rem;
+  color: #399c32;
+}
+.review-name {
+  color: #249087;
+  font-size: 1.08rem;
+  font-weight: 500;
+}
+.review-title {
+  font-size: 1.16rem;
+  font-weight: 600;
+  margin-top: 7px;
+  color: #212121;
+}
+.review-text {
+  margin: 7px 0 13px 0;
+  color: #485261;
+  font-size: 1.03rem;
+  line-height: 1.5;
+}
+
+
+@media (max-width: 500px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    main > body > div:first-child {
+        margin-top: 80px !important; /* Reduced margin for smaller screens */
+    }
+
+    .team1-photo {
+        height: 200px;
+    }
+
+    .team1-photo-wrapper h1 {
+        font-size: 2em;
+        
+    }
+
+    .container1 {
+        margin-top: -24px;
+        padding: 15px; /* Adjust padding */
+    }
+
+    .team2-photo-wrapper {
+        flex-direction: column;
+        gap: 15px;
+        max-width: 100%;
+        margin: 0;
+    }
+
+    .second-photo {
+        width: 80%;
+        max-width: 300px;
+        height: auto; /* Let the height adjust naturally */
+        margin: 18px auto 10px auto; /* Center image and add a small bottom margin */
+    }
+
+    .team2-photo-wrapper p {
+        width: 100%;
+        padding: 0 10px; /* Add some side padding to prevent text touching the edges */
+        line-height: 1.5;
+        font-size: 0.95em;
+    }
+
+    .vm-container {
+        flex-direction: column;
+        margin: 30px auto; /* Adjusted top/bottom margin */
+        padding: 0 10px;
+    }
+
+    .vm-card {
+        /* Ensure full width */
+        width: 100%;
+        padding: 20px; /* Reduced padding */
+    }
+
+    .vm-vision {
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .vm-text {
+        /* Allow text to use available space */
+        max-width: 100%;
+    }
+
+    /* --- Testimonials Section --- */
+    .reviews-section {
+        margin-top: 40px; /* Reduced top margin */
+        padding: 30px 0; /* Reduced vertical padding */
+    }
+
+    .reviews-carousel {
+        overflow-x: scroll;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch; /* For smooth iOS scrolling */
+        padding: 0 20px; 
+        justify-content: flex-start; /* Align items to the start for scrolling */
+        max-width: none; /* Allow carousel to span full width */
+        gap: 20px; /* Reduced gap between cards */
+    }
+    
+    .carousel-arrow {
+        display: none;
+    }
+    
+    .reviews-carousel > .review-card {
+        min-width: 85%; /* Make card slightly smaller than screen to suggest scrolling */
+        max-width: 85%; 
+        height: auto; /* Let content dictate height */
+        box-sizing: border-box; /* Include padding/border in the element's total width/height */
+        scroll-snap-align: start; /* Useful for modern smooth scrolling */
+    }
+
+    .review-card-header,
+    .review-user,
+    .review-text {
+        font-size: 0.95em;
+    }
+
+    .review-stars span {
+        font-size: 1.2rem;
+    }
+}
+        </style>
+
+
+        
+        {% endblock style %}
+{% endblock content %}

@@ -1,0 +1,430 @@
+{% extends 'backend/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>category list</title>
+{% endblock title %}
+    
+
+
+
+
+{% block content %}
+{% block tasktitle %}category list{% endblock tasktitle %}
+{% load widget_tweaks %}
+
+          <!-- ========== App Menu End ========== -->
+
+          <!-- ==================================================== -->
+          <!-- Start right Content here -->
+          <!-- ==================================================== -->
+
+<div class="content-wrapper">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="app-ecommerce-category">
+            <div class="card">
+                <div class="px-4 py-4 d-flex justify-content-between align-items-center">
+                    <h4 class="mb-1">Categories</h4>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasEcommerceCategoryList" aria-controls="offcanvasEcommerceCategoryList">
+                        Create New Category
+                    </button>
+                </div>
+                <div class="card-datatable table-responsive">
+                    <table class="datatables-category-list table border-top">
+                        <thead>
+                            <tr>
+                                <th>SI</th>
+                                <th>Category Name</th>
+                                {% comment %} <th>Parent Category</th> {% endcomment %}
+                                <th>Total Products</th>
+                                <th>Total Earning</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for x in categories %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>
+                                        {{ x.name }}
+                                    </td>
+
+                                    {% comment %} <td>
+                                        {% if x.parent_category %}
+                                            {{ x.parent_category.name }}
+                                        {% else %}
+                                            None
+                                        {% endif %}
+                                    </td> {% endcomment %}
+
+                                    <td>{{ x.products.count }}</td>
+                                    <td>₹{{ x.total_earnings|default:0 }}</td>
+                                    <td class="text-center">
+                                        <a href="#" class="btn btn-primary btn-edit"
+                                            data-slug="{{ x.slug }}"
+                                            data-name="{{ x.name }}"
+                                            data-priority="{{x.priority}}"
+                                            data-status="{{ x.status }}">
+                                            Edit
+                                        </a>
+
+                                        <a href="{% url 'delete_category' x.slug %}" 
+                                            class="btn btn-danger btn-delete" 
+                                            data-url="{% url 'delete_category' x.slug %}">
+                                            Delete
+                                        </a>
+
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Offcanvas for Add/Edit Category -->
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasEcommerceCategoryList" aria-labelledby="offcanvasEcommerceCategoryListLabel">
+                <div class="offcanvas-header py-6">
+                    <h5 id="offcanvasEcommerceCategoryListLabel" class="offcanvas-title">
+                        {% if edit_mode %}Edit Category{% else %}Add Category{% endif %}
+                    </h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body border-top">
+                    <form id="eCommerceCategoryListForm" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% if edit_mode %}
+                            <input type="hidden" name="edit_id" value="{{ form.instance.id }}">
+                        {% endif %}
+                        <div class="mb-6">
+                            <label class="form-label" for="id_name">Title</label>
+                            {{ form.name|add_class:"form-control mb-3" }}
+                        </div>
+                        <div class="mb-6">
+                            <label class="form-label" for="id_name">priority</label>
+                            {{ form.priority|add_class:"form-control mb-3" }}
+                        </div>
+
+                        {% comment %} <div class="mb-6 ecommerce-select2-dropdown">
+                            <label class="form-label" for="id_parent_category">Parent Category</label>
+                            {{ form.parent_category|add_class:"select2 form-select" }}
+                        </div> {% endcomment %}
+
+
+                        <div class="mb-6 ecommerce-select2-dropdown">
+                            <label class="form-label" for="id_status">Select Category Status</label>
+                            {{ form.status|add_class:"select2 form-select mb-3" }}
+                        </div>
+                        <div class="mb-6 ecommerce-select2-dropdown">
+                            <label class="form-label" for="id_slug">Slug</label>
+                            {{ form.slug|add_class:"form-control mb-3"}}
+                        </div>
+                        <div class="mb-6">
+                            <button type="submit" class="btn btn-primary me-sm-3 me-1 data-submit">
+                                {% if edit_mode %}Update{% else %}Add{% endif %}
+                            </button>
+                            <button type="reset" class="btn btn-label-danger" data-bs-dismiss="offcanvas">Discard</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.content-wrapper {
+    background-color: #f5f5f9;
+    min-height: calc(100vh - 70px);
+    padding-left: 256px;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+    border: none;
+    margin-bottom: 2rem;
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(34, 41, 47, 0.05);
+    padding: 1.5rem;
+}
+
+/* Table Styling */
+.table {
+    width: 100%;
+    color: #6e6b7b;
+}
+
+.table thead th {
+    background-color: #f8f8f8;
+    color: #5e5873;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.857rem;
+    letter-spacing: 0.5px;
+    border-bottom-width: 1px;
+    padding: 1rem 1.5rem;
+}
+
+.table tbody td {
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+    border-top: 1px solid rgba(34, 41, 47, 0.05);
+}
+
+.table tbody tr:hover {
+    background-color: rgba(115, 103, 240, 0.04);
+}
+/* Category Name Under Image */
+.table tbody td:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.category__img {
+    width: 60px;
+    height: 60px;
+    border-radius: 4px;
+    object-fit: cover;
+    margin-right: 0;
+}
+
+.table tbody td {
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.text-center .btn {
+    margin: 0 4px;
+}
+
+.table tbody td:nth-child(2) {
+    min-width: 150px;
+}
+.category__img {
+    border-radius: 4px;
+    object-fit: cover;
+    vertical-align: middle;
+}
+
+/* Button Styling */
+.btn {
+    font-weight: 500;
+    padding: 0.572rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #7367f0;
+    border-color: #7367f0;
+}
+
+.btn-primary:hover {
+    background-color: #5d52d1;
+    border-color: #5d52d1;
+    box-shadow: 0 8px 25px -8px rgba(115, 103, 240, 0.4);
+}
+
+.btn-danger {
+    background-color: #ea5455;
+    border-color: #ea5455;
+}
+
+.btn-danger:hover {
+    background-color: #e42728;
+    border-color: #e42728;
+    box-shadow: 0 8px 25px -8px rgba(234, 84, 85, 0.4);
+}
+
+/* Offcanvas Styling */
+.offcanvas {
+    background-color: #fff;
+    width: 500px;
+}
+
+.offcanvas-header {
+    border-bottom: 1px solid rgba(34, 41, 47, 0.05);
+    padding: 1.5rem;
+}
+
+.offcanvas-title {
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: #5e5873;
+}
+
+.offcanvas-body {
+    padding: 1.5rem;
+}
+
+/* Form Styling */
+.form-label {
+    font-weight: 500;
+    color: #5e5873;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.form-control, .form-select {
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    border: 1px solid #d8d6de;
+    color: #6e6b7b;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #7367f0;
+    box-shadow: 0 3px 10px 0 rgba(115, 103, 240, 0.1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .offcanvas {
+        width: 80%;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* Status Badges */
+.badge {
+    padding: 0.4rem 0.75rem;
+    font-weight: 500;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.badge.bg-success {
+    background-color: rgba(40, 199, 111, 0.12) !important;
+    color: #28c76f !important;
+}
+
+.badge.bg-danger {
+    background-color: rgba(234, 84, 85, 0.12) !important;
+    color: #ea5455 !important;
+}
+
+/* Action Buttons */
+.text-center .btn {
+    margin: 0 0.25rem;
+}
+
+/* TinyMCE Editor Styling */
+.tox-tinymce {
+    border-radius: 6px !important;
+    border-color: #d8d6de !important;
+}
+
+/* Select2 Dropdown Styling */
+.select2-container--default .select2-selection--single {
+    height: auto;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d8d6de;
+    border-radius: 6px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100%;
+}
+
+/* Hover Effects */
+.btn-edit:hover, .btn-delete:hover {
+    transform: translateY(-2px);
+}
+
+/* Empty State Styling */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #b9b9c3;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #d8d6de;
+}
+</style>
+
+<script>
+    document.querySelector('.categories__sidebar').classList.add('active')
+    document.querySelector('.products___sidebar').classList.add('open')
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.9.11/tinymce.min.js"></script>
+<script>
+    tinymce.init({
+        selector: "textarea#id_description",
+    });
+</script>
+<script>
+
+    document.querySelectorAll('.btn-edit').forEach(button => {
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            const slug = this.getAttribute('data-slug');
+            const name = this.getAttribute('data-name');
+            const status = this.getAttribute('data-status');
+            const priority = this.getAttribute('data-priority');
+
+            document.querySelector('#id_name').value = name;
+            document.querySelector('#id_slug').value = slug;
+            document.querySelector('#id_status').value = status;
+            document.querySelector('#id_priority').value = priority;
+
+            const form = document.getElementById('eCommerceCategoryListForm');
+            form.action = `/account/category/${slug}/edit/`;
+
+            const offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasEcommerceCategoryList'));
+            offcanvas.show();
+        });
+    });
+</script>
+
+<script>
+document.querySelectorAll('.btn-delete').forEach(button => {
+    button.addEventListener('click', function (event) {
+        event.preventDefault(); // Stop immediate redirect
+
+        const deleteUrl = this.getAttribute('data-url');
+
+        // SweetAlert confirmation
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to undo this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirect to delete URL only after confirmation
+                window.location.href = deleteUrl;
+            }
+        });
+    });
+});
+</script>
+
+{% endblock content %}
