@@ -34,9 +34,11 @@
 
                             </div>
                             <div class="card-footer d-flex flex-wrap align-items-center justify-content-between bg-light-subtle gap-2">
-                                <div>
-                                    <a href="#!" class="btn btn-primary">Make As Delivered</a>
-                                </div>
+                            {% if order.status != 'delivered' %}
+                            <a href="{% url 'collect_cash' order.id %}" class="btn btn-primary">
+                                Mark As Delivered
+                            </a>
+                            {% endif %}
                             </div>
                         </div>
                         <div class="card">

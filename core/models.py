@@ -261,3 +261,36 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.product.name} ({self.size}) x{self.quantity}"
+
+
+
+
+
+
+
+
+class Payment(models.Model):
+
+    PAYMENT_METHODS = (
+        ('cod', 'Cash on Delivery'),
+        ('online', 'Online'),
+    )
+
+    PAYMENT_STATUS = (
+        ('pending', 'Pending'),
+        ('success', 'Success'),
+        ('failed', 'Failed'),
+        ('refunded', 'Refunded'),
+    )
+
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    payment_id = models.CharField(max_length=200, blank=True, null=True)
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='pending')
+    transaction_id = models.CharField(max_length=200, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.order.order_id} - {self.payment_method}"

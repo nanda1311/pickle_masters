@@ -399,14 +399,6 @@ def add_to_cart(request):
 @csrf_exempt
 def checkout_from_cart(request):
 
-    """
-    POST /checkout/
-    JSON payload:
-    {
-        "address_id": 5,
-        "payment_method": "cod" | "online"
-    }
-    """
     if request.method != "POST":
         return JsonResponse({"success": False, "message": "POST required"}, status=405)
 
@@ -442,8 +434,7 @@ def checkout_from_cart(request):
         }, status=400)
 
     # === CASH ON DELIVERY → status = completed ===
-    order_status = "completed" if payment_method == "cod" else "pending"
-
+    order_status = "placed" if payment_method == "cod" else "pending"
     with transaction.atomic():
         # Create Order
         total = sum(item.subtotal() for item in cart_items)
@@ -455,7 +446,17 @@ def checkout_from_cart(request):
             total_amount=total
         )
 
-        # Create OrderItems & clear cart
+        # Create Payment object with pending status
+        Payment.objects.create(
+            order=order,
+            user=request.user,
+            payment_method=payment_method,
+            amount=total,
+            status='pending'
+        )
+
+
+        # Create OrderItems
         order_items = []
         for cart_item in cart_items:
             order_items.append(
@@ -468,10 +469,12 @@ def checkout_from_cart(request):
                     price_at_purchase=cart_item.price_at_addition
                 )
             )
+
         OrderItem.objects.bulk_create(order_items)
 
         # Empty cart
         cart_items.delete()
+
 
     return JsonResponse({
         "success": True,
@@ -1114,13 +1117,44 @@ def order_detail(request, pk):
         return render(request, 'backend/order-detail.html', {'order': order})
     else:
         return redirect('home')
+    
+
 @login_required(login_url='adminlogin')
 def orders_list(request):
     if request.user.is_superuser:
-        orders = Order.objects.all()
+        orders = Order.objects.exclude(status='pending').prefetch_related('payments')
         return render(request, 'backend/orders-list.html', {'orders': orders})
     else:
         return redirect('home')
+
+
+
+@login_required(login_url='adminlogin')
+def collect_cash(request, order_id):
+
+    if request.user.is_superuser:
+
+        order = get_object_or_404(Order, id=order_id)
+        order.status = 'delivered'
+        order.save()
+
+        try:
+            payment = Payment.objects.get(order=order)
+            payment.status = "success"
+            payment.save()
+        except Payment.DoesNotExist:
+            pass
+
+        # redirect back to same page
+        return redirect(request.META.get('HTTP_REFERER', 'orders_list'))
+
+    else:
+        return redirect('home')
+    
+
+
+    
+
 @login_required(login_url='adminlogin')
 def product_add(request):
     if request.user.is_superuser:
@@ -1145,12 +1179,30 @@ def product_list(request):
         return render(request, 'backend/product-list.html')
     else:
         return redirect('home')
+
+
+
+
 @login_required(login_url='adminlogin')
-def purchase_list(request):
+def payment_list(request):
+
     if request.user.is_superuser:
-        return render(request, 'backend/purchase-list.html')
+
+        payments = Payment.objects.filter(status='success').select_related(
+            'order','user'
+        ).prefetch_related(
+            'order__items',
+            'order__items__product'
+        )
+
+        return render(request,'backend/payment-list.html',{
+            'payments':payments
+        })
+
     else:
         return redirect('home')
+
+
 @login_required(login_url='adminlogin')
 def purchase_order(request):
     if request.user.is_superuser:

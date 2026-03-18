@@ -74,9 +74,10 @@ urlpatterns = [
 
     path('account/order/checkout/', order_checkout, name='order_checkout'),
     path('account/order/detail/<int:pk>/', order_detail, name='order_detail'),
+    path('account/order/collect-cash/<int:order_id>/', collect_cash, name='collect_cash'),
     path('account/orders/list/', orders_list, name='orders_list'),
     path('account/product/details/', product_details, name='product_details'),
-    path('account/purchase/list/', purchase_list, name='purchase_list'),
+    path('account/payments/list/', payment_list, name='payment_list'),
     path('account/purchase/order/', purchase_order, name='purchase_order'),
     path('account/purchase/returns/', purchase_returns, name='purchase_returns'),
     path('account/settings/', settings, name='settings'),
