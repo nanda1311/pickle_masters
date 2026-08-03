@@ -20,6 +20,47 @@ from django.db import transaction
 from django.db.models import Q
 
 
+
+from django.http import JsonResponse
+
+from .forms import PincodeCheckForm
+from .models import ServiceablePincode
+
+
+def check_pincode(request):
+    if request.method != "POST":
+        return JsonResponse({
+            "success": False,
+            "message": "Invalid request."
+        })
+
+    form = PincodeCheckForm(request.POST)
+
+    if not form.is_valid():
+        return JsonResponse({
+            "success": False,
+            "message": "Enter a valid 6-digit pincode."
+        })
+
+    pincode = form.cleaned_data["pincode"]
+
+    exists = ServiceablePincode.objects.filter(
+        pincode=pincode,
+        is_active=True
+    ).first()
+
+    if exists:
+        return JsonResponse({
+            "success": True,
+            "available": True,
+            "message": f"Delivery available in {exists.city}."
+        })
+
+    return JsonResponse({
+        "success": True,
+        "available": False,
+        "message": "Sorry, delivery is not available for this pincode."
+    })
 # frontend
 
 def home(request):

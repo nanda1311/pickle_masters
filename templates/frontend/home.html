@@ -741,7 +741,7 @@
     <div class="product-carousel-wrapper">
         <div class="product-carousel" id="productCarousel">
             
-            {% for product in veg_products %}
+            {% for product in veg_products|slice:":5" %}
             <div class="product-card">
               <a href="{% url 'product_detail' product.slug %}" class="product-link">
                 <img src="{{ product.image }}" alt="{{ product.name }}">
@@ -798,7 +798,7 @@
     <div class="product-carousel-wrapper">
         <div class="product-carousel" id="productCarouselNonVeg">
             
-            {% for product in non_veg_products %}
+            {% for product in non_veg_products|slice:":5" %}
             <div class="product-card">
                 <a href="{% url 'product_detail' product.slug %}" class="product-link">
                     <img src="{{ product.image }}" alt="{{ product.name }}">
@@ -858,7 +858,7 @@
     <div class="product-carousel-wrapper">
         <div class="product-carousel" id="productCarouselGongura">
             
-            {% for product in gongura_products %}
+            {% for product in gongura_products|slice:":5" %}
             <div class="product-card">
                 <a href="{% url 'product_detail' product.slug %}" class="product-link">
                     <img src="{{ product.image }}" alt="{{ product.name }}">
@@ -1114,7 +1114,6 @@ function addToCart(productId) {
         <div class="avatar"><span>👤</span></div>
         <span class="review-name">Hari Krishna</span>
       </div>
-      
     </div>
 
 

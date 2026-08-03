@@ -10,7 +10,17 @@ from multiselectfield import MultiSelectField
 from django.contrib.auth.models import User
 
 
+class ServiceablePincode(models.Model):
+    pincode = models.CharField(max_length=6, unique=True)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100, blank=True)
+    is_active = models.BooleanField(default=True)
 
+    class Meta:
+        ordering = ["pincode"]
+
+    def __str__(self):
+        return f"{self.pincode} - {self.city}"
 
 CATEGORY_STATUS = (
     ('active', 'Active'),

@@ -4,6 +4,8 @@ from .views import *
 
 
 urlpatterns = [
+
+    path("check-pincode/",check_pincode,name="check_pincode",),
     #frontend
     path('home/', home, name="home"),
 

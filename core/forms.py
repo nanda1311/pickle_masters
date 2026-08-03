@@ -9,7 +9,30 @@ from .models import Product
 from django.forms import inlineformset_factory
 from rest_framework import serializers
 
+from django import forms
 
+
+class PincodeCheckForm(forms.Form):
+    pincode = forms.CharField(
+        max_length=6,
+        min_length=6,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Enter Pincode"
+            }
+        )
+    )
+
+    def clean_pincode(self):
+        pincode = self.cleaned_data["pincode"]
+
+        if not pincode.isdigit():
+            raise forms.ValidationError("Enter a valid pincode.")
+
+        return pincode
+
+
+    
 class AddressSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField(source='__str__', read_only=True)
 

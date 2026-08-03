@@ -1018,9 +1018,87 @@
             <button class="add-cart-btn" id="addToCartBtn" data-product-id="{{ product.id }}">Add to Cart</button>
           </div>
         </div>
+
+        <div class="pincode-section" style="margin-top: 20px;">
+          <label class="option-label">Check Availability:</label>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <input 
+              type="text" 
+              id="pincode-input" 
+              placeholder="Enter pincode" 
+              maxlength="6" 
+              class="qty-input"
+              style="width: 150px; padding: 8px;">
+            <button 
+              class="add-cart-btn" 
+              id="checkAvailabilityBtn" 
+              style="padding: 8px 16px;">
+              Check
+            </button>
+          </div>
+          <div id="availability-message" style="margin-top: 10px; font-size: 14px;"></div>
+        </div>
+
       </div>
     </section>
+<script>
+document.getElementById("checkAvailabilityBtn").addEventListener("click", function () {
 
+    const pincode = document.getElementById("pincode-input").value;
+    const message = document.getElementById("availability-message");
+
+    if (pincode.length !== 6) {
+        message.innerHTML = "<span style='color:red;'>Please enter a valid 6-digit pincode.</span>";
+        return;
+    }
+
+    fetch("/check-pincode/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: new URLSearchParams({
+            pincode: pincode
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        if (data.available) {
+            message.innerHTML = `<span style="color:green;">${data.message}</span>`;
+        } else {
+            message.innerHTML = `<span style="color:red;">${data.message}</span>`;
+        }
+
+    });
+});
+
+
+function getCookie(name) {
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== '') {
+
+        const cookies = document.cookie.split(';');
+
+        for (let i = 0; i < cookies.length; i++) {
+
+            const cookie = cookies[i].trim();
+
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+
+                break;
+
+            }
+        }
+    }
+
+    return cookieValue;
+}
+</script>
 
 <div class="product-tabs ">
   <div class="tabs-header container">
