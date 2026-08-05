@@ -991,8 +991,17 @@ def adminlogout_page(request):
     return redirect('adminlogin')
 @login_required(login_url='adminlogin')
 def dashboard(request):
+    categories = Category.objects.all()
+    total_products = Product.objects.filter(status='active').count()
+    total_orders = Order.objects.exclude(status='pending').count()
+    
+
     if request.user.is_superuser:
-        return render(request, 'backend/dashboard.html')
+        return render(request, 'backend/dashboard.html', {
+            'categories': categories,
+            'total_products': total_products,
+            'total_orders': total_orders,
+        })
     else:
         return redirect('home')
 

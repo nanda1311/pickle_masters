@@ -890,6 +890,14 @@ address {
 </footer>
 
      {% block script %}
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<div id="g_id_onload"
+     data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+     data-login_uri="https://picklemasters.in/accounts/google/login/callback/"
+     data-auto_prompt="true">
+</div>
+
 <script>
 const menuToggle = document.getElementById("menuToggle");
 const mobileMenu = document.getElementById("mobileMenu");

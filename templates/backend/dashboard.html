@@ -32,25 +32,15 @@
                                         <div class="card overflow-hidden">
                                              <div class="card-body">
                                                   <div class="row">
-                                                       <div class="col-6">
-                                                            <div class="avatar-md bg-soft-primary rounded">
-                                                                 <iconify-icon icon="solar:cart-5-bold-duotone" class="avatar-title fs-32 text-primary"></iconify-icon>
-                                                            </div>
-                                                       </div> <!-- end col -->
-                                                       <div class="col-6 text-end">
-                                                            <p class="text-muted mb-0 text-truncate">Veg Products</p>
-                                                            <h3 class="text-dark mt-1 mb-0"></h3>
+                                                       <div class="col-12 text-end">
+                                                            {% for x in categories %}
+                                                                 <p class="text-muted mb-0 text-truncate">{{ x.name }} ({{ x.products.count }})</p>
+                                                            {% empty %}
+                                                                 <p class="text-muted mb-0 text-truncate">No categories available</p>
+                                                            {% endfor %}
+                                                            <h3 class="text-dark mt-1 mb-0">Total products - {{ total_products|default:"0" }}</h3>
                                                        </div> <!-- end col -->
                                                   </div> <!-- end row-->
-                                             </div> <!-- end card body -->
-                                             <div class="card-footer py-2 bg-light bg-opacity-50">
-                                                  <div class="d-flex align-items-center justify-content-between">
-                                                       <div>
-                                                            <span class="text-success"> <i class="bx bxs-up-arrow fs-12"></i> 2.3%</span>
-                                                            <span class="text-muted ms-1 fs-12">Last Week</span>
-                                                       </div>
-                                                       <a href="#!" class="text-reset fw-semibold fs-12">View More</a>
-                                                  </div>
                                              </div> <!-- end card body -->
                                         </div> <!-- end card -->
                                    </div> <!-- end col -->
@@ -136,275 +126,157 @@
                          </div> <!-- end col -->
                     </div> <!-- end row -->
 
-                         <div class="col-xl-4 d-none">
-                              <div class="card">
-                                   <div class="card-header d-flex justify-content-between align-items-center">
-                                        <h4 class="card-title">Recent Transactions</h4>
-                                        <div>
-                                             <a href="#!" class="btn btn-sm btn-primary">
-                                                  <i class="bx bx-plus me-1"></i>Add
-                                             </a>
+                         <div class="row">
+                              <div class="col-xl-12">
+                                   <div class="card">
+                                        <div class="d-flex card-header justify-content-between align-items-center">
+                                             <div>
+                                                  <h4 class="card-title">All Order List</h4>
+                                             </div>
                                         </div>
-                                   </div> <!-- end card-header-->
-                                   <div class="card-body p-0">
-                                        <div class="px-3" data-simplebar style="max-height: 398px;">
-                                             <table class="table table-hover mb-0 table-centered">
+                                        <div class="card-body p-0">
+                                             <div class="table-responsive">
+                                             {% if orders %}
+                                             <table class="table align-middle mb-0 table-hover table-centered">
+                                                  <thead class="bg-light-subtle">
+                                                       <tr>
+                                                            <th>Order ID</th>
+                                                            <th>Created at</th>
+                                                            <th>Customer</th>
+                                                            <th>Total</th>
+                                                            <th>Payment Status</th>
+                                                            <th>Items</th>
+                                                            <th>Order Status</th>
+                                                            <th>Action</th>
+                                                       </tr>
+                                                  </thead>
+
                                                   <tbody>
+                                                       {% for order in orders %}
                                                        <tr>
-                                                            <td>24 April, 2024</td>
-                                                            <td>$120.55</td>
-                                                            <td><span class="badge bg-success">Cr</span></td>
-                                                            <td>Commisions </td>
+                                                            <td>#{{ order.id }}</td>
+
+                                                            <td>
+                                                                 {{ order.created_at|date:"d M Y" }}<br />
+                                                                 <small>{{ order.created_at|time:"h:i A" }}</small>
+                                                            </td>
+
+                                                            <td>
+                                                                 <a href="#!" class="link-primary fw-medium"> {{ order.user.username }} </a>
+                                                            </td>
+
+                                                            <td>₹{{ order.total_amount|floatformat:2 }}</td>
+
+                                                            <td>
+                                                                 {% with payment=order.payments.first %} {% if payment %} {% if payment.status == "success" %}
+                                                                 <span class="badge bg-success px-2 py-1 fs-13">
+                                                                 {{ payment.get_payment_method_display }} - Paid
+                                                                 </span>
+
+                                                                 {% elif payment.status == "pending" %}
+                                                                 <span class="badge bg-warning px-2 py-1 fs-13">
+                                                                 {{ payment.get_payment_method_display }} - Pending
+                                                                 </span>
+
+                                                                 {% elif payment.status == "failed" %}
+                                                                 <span class="badge bg-danger px-2 py-1 fs-13">
+                                                                 {{ payment.get_payment_method_display }} - Failed
+                                                                 </span>
+
+                                                                 {% else %}
+                                                                 <span class="badge bg-secondary px-2 py-1 fs-13"> {{ payment.get_payment_method_display }} </span>
+                                                                 {% endif %} {% else %}
+                                                                 <span class="badge bg-secondary px-2 py-1 fs-13"> No Payment </span>
+                                                                 {% endif %} {% endwith %}
+                                                            </td>
+
+                                                            <td>{{ order.items.count }}</td>
+
+                                                            <td>
+                                                                 <span
+                                                                 class="badge border border-secondary {% if order.status == 'placed' %} text-success {% elif order.status == 'pending' %} text-warning {% elif order.status == 'cancelled' %} text-danger {% else %} text-secondary {% endif %} px-2 py-1 fs-13"
+                                                                 >
+                                                                 {{ order.get_status_display }}
+                                                                 </span>
+                                                            </td>
+
+                                                            <td>
+                                                                 <div class="d-flex gap-2">
+                                                                 <a href="{% url 'order_detail' order.id %}" class="btn btn-light btn-sm">
+                                                                      <iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon>
+                                                                 </a>
+
+                                                                 <button class="btn btn-light btn-sm" onclick="toggleOrderItems('order-{{ order.id }}')">
+                                                                      Items
+                                                                 </button>
+                                                                 </div>
+                                                            </td>
                                                        </tr>
+
+                                                       <!-- Order Items Section -->
                                                        <tr>
-                                                            <td>24 April, 2024</td>
-                                                            <td>$9.68</td>
-                                                            <td><span class="badge bg-success">Cr</span></td>
-                                                            <td>Affiliates </td>
+                                                            <td colspan="8">
+                                                                 <div class="order-items-tab" id="order-{{ order.id }}" style="display: none">
+                                                                 {% for item in order.items.all %}
+
+                                                                 <div class="order-item d-flex align-items-center p-2 border-bottom">
+                                                                      <img
+                                                                           src="{% if item.product.image %}{{ item.product.image.url }}{% endif %}"
+                                                                           alt="{{ item.product.name }}"
+                                                                           style="width: 50px; height: 50px; object-fit: cover; margin-right: 15px"
+                                                                      />
+
+                                                                      <div class="item-details flex-grow-1">
+                                                                           <div class="name">{{ item.product.name }}</div>
+
+                                                                           <div class="meta">
+                                                                                Size: <strong>{{ item.size }}</strong> | Qty: <strong>{{ item.quantity }}</strong>
+                                                                           </div>
+                                                                      </div>
+
+                                                                      <div class="item-price">₹{{ item.price_at_purchase|floatformat:2 }}</div>
+
+                                                                      <div class="item-price ms-3">Subtotal: ₹{{ item.subtotal|floatformat:2 }}</div>
+                                                                 </div>
+
+                                                                 {% endfor %}
+                                                                 </div>
+                                                            </td>
                                                        </tr>
-                                                       <tr>
-                                                            <td>20 April, 2024</td>
-                                                            <td>$105.22</td>
-                                                            <td><span class="badge bg-danger">Dr</span></td>
-                                                            <td>Grocery </td>
-                                                       </tr>
-                                                       <tr>
-                                                            <td>18 April, 2024</td>
-                                                            <td>$80.59</td>
-                                                            <td><span class="badge bg-success">Cr</span></td>
-                                                            <td>Refunds </td>
-                                                       </tr>
-                                                       <tr>
-                                                            <td>18 April, 2024</td>
-                                                            <td>$750.95</td>
-                                                            <td><span class="badge bg-danger">Dr</span></td>
-                                                            <td>Bill Payments </td>
-                                                       </tr>
-                                                       <tr>
-                                                            <td>17 April, 2024</td>
-                                                            <td>$455.62</td>
-                                                            <td><span class="badge bg-danger">Dr</span></td>
-                                                            <td>Electricity </td>
-                                                       </tr>
-                                                       <tr>
-                                                            <td>17 April, 2024</td>
-                                                            <td>$102.77</td>
-                                                            <td><span class="badge bg-success">Cr</span></td>
-                                                            <td>Interest </td>
-                                                       </tr>
-                                                       <tr>
-                                                            <td>16 April, 2024</td>
-                                                            <td>$79.49</td>
-                                                            <td><span class="badge bg-success">Cr</span></td>
-                                                            <td>Refunds </td>
-                                                       </tr>
-                                                       <tr>
-                                                            <td>05 April, 2024</td>
-                                                            <td>$980.00</td>
-                                                            <td><span class="badge bg-danger">Dr</span></td>
-                                                            <td>Shopping</td>
-                                                       </tr>
+
+                                                       {% endfor %}
                                                   </tbody>
                                              </table>
-                                        </div>
-                                   </div> <!-- end card body -->
-                              </div> <!-- end card-->
-                         </div> <!-- end col-->
-                    </div> <!-- end row -->
 
-                    <div class="row">
-                         <div class="col">
-                              <div class="card">
-                                   <div class="card-body">
-                                        <div class="d-flex align-items-center justify-content-between">
-                                             <h4 class="card-title">
-                                                  Recent Orders
-                                             </h4>
+                                             {% else %}
 
-                                             <a href="#!" class="btn btn-sm btn-soft-primary">
-                                                  <i class="bx bx-plus me-1"></i>Create Order
-                                             </a>
-                                        </div>
-                                   </div>
-                                   <!-- end card body -->
-                                   <div class="table-responsive table-centered">
-                                        <table class="table mb-0">
-                                             <thead class="bg-light bg-opacity-50">
-                                                  <tr>
-                                                       <th class="ps-3">
-                                                            Order ID.
-                                                       </th>
-                                                       <th>
-                                                            Date
-                                                       </th>
-                                                       <th>
-                                                            Product
-                                                       </th>
-                                                       <th>
-                                                            Customer Name
-                                                       </th>
-                                                       <th>
-                                                            Email ID
-                                                       </th>
-                                                       <th>
-                                                            Phone No.
-                                                       </th>
-                                                       <th>
-                                                            Address
-                                                       </th>
-                                                       <th>
-                                                            Payment Type
-                                                       </th>
-                                                       <th>
-                                                            Status
-                                                       </th>
-                                                  </tr>
-                                             </thead>
-                                             <!-- end thead-->
-                                             <tbody>
-                                                  <tr>
-                                                       <td class="ps-3">
-                                                            <a href="{% static 'backend/order-detail.html'%}">#RB5625</a>
-                                                       </td>
-                                                       <td>29 April 2024</td>
-                                                       <td>
-                                                            <img src="{% static 'backend/assets/images/products/product-1(1).png'%}" alt="product-1(1)" class="img-fluid avatar-sm">
-                                                       </td>
-                                                       <td>
-                                                            <a href="#!">Anna M. Hines</a>
-                                                       </td>
-                                                       <td>anna.hines@mail.com</td>
-                                                       <td>(+1)-555-1564-261</td>
-                                                       <td>Burr Ridge/Illinois</td>
-                                                       <td>Credit Card</td>
-                                                       <td>
-                                                            <i class="bx bxs-circle text-success me-1"></i>Completed
-                                                       </td>
-                                                  </tr>
-                                                  <tr>
-                                                       <td class="ps-3">
-                                                            <a href="{% static 'backend/order-detail.html'%}">#RB9652</a>
-                                                       </td>
-                                                       <td>25 April 2024</td>
-                                                       <td>
-                                                            <img src="{% static 'backend/assets/images/products/product-4.png'%}" alt="product-4" class="img-fluid avatar-sm">
-                                                       </td>
-                                                       <td>
-                                                            <a href="#!">Judith H. Fritsche</a>
-                                                       </td>
-                                                       <td>judith.fritsche.com</td>
-                                                       <td>(+57)-305-5579-759</td>
-                                                       <td>SULLIVAN/Kentucky</td>
-                                                       <td>Credit Card</td>
-                                                       <td>
-                                                            <i class="bx bxs-circle text-success me-1"></i>Completed
-                                                       </td>
-                                                  </tr>
-                                                  <tr>
-                                                       <td class="ps-3">
-                                                            <a href="{% static 'backend/order-detail.html'%}">#RB5984</a>
-                                                       </td>
-                                                       <td>25 April 2024</td>
-                                                       <td>
-                                                            <img src="{% static 'backend/assets/images/products/product-5.png'%}" alt="product-5" class="img-fluid avatar-sm">
-                                                       </td>
-                                                       <td>
-                                                            <a href="#!">Peter T. Smith</a>
-                                                       </td>
-                                                       <td>peter.smith@mail.com</td>
-                                                       <td>(+33)-655-5187-93</td>
-                                                       <td>Yreka/California</td>
-                                                       <td>Pay Pal</td>
-                                                       <td>
-                                                            <i class="bx bxs-circle text-success me-1"></i>Completed
-                                                       </td>
-                                                  </tr>
-                                                  <tr>
-                                                       <td class="ps-3">
-                                                            <a href="{% static 'backend/order-detail.html'%}">#RB3625</a>
-                                                       </td>
-                                                       <td>21 April 2024</td>
-                                                       <td>
-                                                            <img src="{% static 'backend/assets/images/products/product-6.png'%}" alt="product-6" class="img-fluid avatar-sm">
-                                                       </td>
-                                                       <td>
-                                                            <a href="#!">Emmanuel J. Delcid</a>
-                                                       </td>
-                                                       <td>
-                                                            emmanuel.delicid@mail.com
-                                                       </td>
-                                                       <td>(+30)-693-5553-637</td>
-                                                       <td>Atlanta/Georgia</td>
-                                                       <td>Pay Pal</td>
-                                                       <td>
-                                                            <i class="bx bxs-circle text-primary me-1"></i>Processing
-                                                       </td>
-                                                  </tr>
-                                                  <tr>
-                                                       <td class="ps-3">
-                                                            <a href="{% static 'backend/order-detail.html'%}">#RB8652</a>
-                                                       </td>
-                                                       <td>18 April 2024</td>
-                                                       <td>
-                                                            <img src="{% static 'backend/assets/images/products/product-1(2).png'%}" alt="product-1(2)" class="img-fluid avatar-sm">
-                                                       </td>
-                                                       <td>
-                                                            <a href="#!">William J. Cook</a>
-                                                       </td>
-                                                       <td>william.cook@mail.com</td>
-                                                       <td>(+91)-855-5446-150</td>
-                                                       <td>Rosenberg/Texas</td>
-                                                       <td>Credit Card</td>
-                                                       <td>
-                                                            <i class="bx bxs-circle text-primary me-1"></i>Processing
-                                                       </td>
-                                                  </tr>
-                                             </tbody>
-                                             <!-- end tbody -->
-                                        </table>
-                                        <!-- end table -->
-                                   </div>
-                                   <!-- table responsive -->
+                                             <div class="no-orders text-center p-4">
+                                                  <i class="fas fa-box-open" style="font-size: 3rem; color: #ccc"></i>
 
-                                   <div class="card-footer border-top">
-                                        <div class="row g-3">
-                                             <div class="col-sm">
-                                                  <div class="text-muted">
-                                                       Showing
-                                                       <span class="fw-semibold">5</span>
-                                                       of
-                                                       <span class="fw-semibold">90,521</span>
-                                                       orders
-                                                  </div>
+                                                  <br /><br />
+
+                                                  <p>No orders found.</p>
+
+                                                  <a href="{% url 'shop' %}"> Continue Shopping </a>
                                              </div>
 
-                                             <div class="col-sm-auto">
-                                                  <ul class="pagination m-0">
-                                                       <li class="page-item">
-                                                            <a href="#" class="page-link"><i class="bx bx-left-arrow-alt"></i></a>
-                                                       </li>
-                                                       <li class="page-item active">
-                                                            <a href="#" class="page-link">1</a>
-                                                       </li>
-                                                       <li class="page-item">
-                                                            <a href="#" class="page-link">2</a>
-                                                       </li>
-                                                       <li class="page-item">
-                                                            <a href="#" class="page-link">3</a>
-                                                       </li>
-                                                       <li class="page-item">
-                                                            <a href="#" class="page-link"><i class="bx bx-right-arrow-alt"></i></a>
-                                                       </li>
-                                                  </ul>
+                                             {% endif %}
                                              </div>
+
                                         </div>
                                    </div>
                               </div>
-                              <!-- end card -->
                          </div>
-                         <!-- end col -->
-                    </div> <!-- end row -->
-
+<script>
+function toggleOrderItems(orderId) {
+    const element = document.getElementById(orderId);
+    if (element.style.display === 'none') {
+        element.style.display = 'block';
+    } else {
+        element.style.display = 'none';
+    }
+}
+</script>
                </div>
                <!-- End Container Fluid -->
 

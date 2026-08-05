@@ -49,13 +49,6 @@
                                         {{ x.name }}
                                     </td>
 
-                                    {% comment %} <td>
-                                        {% if x.parent_category %}
-                                            {{ x.parent_category.name }}
-                                        {% else %}
-                                            None
-                                        {% endif %}
-                                    </td> {% endcomment %}
 
                                     <td>{{ x.products.count }}</td>
                                     <td>₹{{ x.total_earnings|default:0 }}</td>

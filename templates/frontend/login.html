@@ -6,6 +6,7 @@
 {% endblock title %}
 
 {% block content %}
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <!-- Bootstrap Icons CDN -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -438,6 +439,12 @@
           Login
         </button>
       </form>
+              <!-- 2. GOOGLE AUTOMATIC ONE-TAP TRIGGER -->
+        <div id="g_id_onload"
+              data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+              data-login_uri="https://picklemasters.in/accounts/google/login/callback/"
+              data-auto_prompt="true">
+        </div>
 
       <div class="register-section">
         <span>Don't have an account?</span>
