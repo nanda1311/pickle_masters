@@ -1360,12 +1360,6 @@ def product_details(request):
     else:
         return redirect('home')
 @login_required(login_url='adminlogin')
-def product_edit(request):
-    if request.user.is_superuser:
-        return render(request, 'backend/product-edit.html')
-    else:
-        return redirect('home')
-@login_required(login_url='adminlogin')
 def product_list(request):
     if request.user.is_superuser:
         return render(request, 'backend/product-list.html')

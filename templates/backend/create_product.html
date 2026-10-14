@@ -4,20 +4,15 @@
 {% block title %}
     <title>product add</title>
 {% endblock title %}
-    
 
-
-
-
-{% block content %}
 {% block tasktitle %}product add{% endblock tasktitle %}
 
-
-
-<div class="container-fluid pb-4 mb-5 backend-product-create">
-  <div class="row justify-content-center">
-    <div class="col-12 col-xl-10">
-      <form method="POST" enctype="multipart/form-data" class="create-product-form">
+{% block content %}
+<div class="content-wrapper">
+  <div class="container-fluid pb-4 mb-5 backend-product-create">
+    <div class="row justify-content-center">
+      <div class="col-12 col-xl-10">
+        <form method="POST" enctype="multipart/form-data" class="create-product-form">
           {% csrf_token %}
           <div class="card mb-4">
             <div class="card-header">
@@ -70,8 +65,8 @@
           <div class="d-flex justify-content-end">
             <button type="submit" class="btn btn-primary px-4">Create Product</button>
           </div>
-      </form>
-
+        </form>
+      </div>
     </div>
   </div>
 </div>

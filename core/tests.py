@@ -273,7 +273,9 @@ class ProductPriceEditingTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'create-product-form')
+        self.assertContains(response, '<div class="content-wrapper">')
         self.assertContains(response, '@media (max-width: 767.98px)')
+        self.assertNotContains(response, 'backend/assets/js/pages/dashboard.js')
         self.assertNotContains(response, 'admin-responsive.css')
 
     def test_product_list_renders_products_and_resolved_shared_assets(self):
