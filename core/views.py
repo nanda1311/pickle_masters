@@ -12,12 +12,17 @@ from django.contrib.auth import authenticate, login ,logout
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 import json
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.db import transaction
 from django.db.models import Q
+from django.conf import settings as dj_settings
+import razorpay
+from google.oauth2 import id_token as google_id_token
+from google.auth.transport import requests as google_auth_requests
 
 
 
@@ -200,44 +205,7 @@ def cateogry_products(request, slug):
     }
     return render(request, 'frontend/category-products.html', context)
 
-def cart_items(request):
-    cart = request.session.get('cart', {})
-    items = []
-    total = 0
-    addresses = request.user.addresses.all()
-
-    for product_id, item in cart.items():
-        total_price = item['price'] * item['quantity']
-        items.append({
-            'id': product_id,
-            'name': item['name'],
-            'price': item['price'],
-            'quantity': item['quantity'],
-            'total_price': total_price,
-            'image_url': item['image_url'],
-        })
-        total += total_price
-
-    return JsonResponse({'items': items, 'cart_total': total ,'addresses': addresses})
-
-def update_cart_quantity(request, product_id):
-    import json
-    data = json.loads(request.body)
-    action = data.get('action')
-    cart = request.session.get('cart', {})
-
-    if str(product_id) in cart:
-        if action == 'increment':
-            cart[str(product_id)]['quantity'] += 1
-        elif action == 'decrement' and cart[str(product_id)]['quantity'] > 1:
-            cart[str(product_id)]['quantity'] -= 1
-        request.session['cart'] = cart
-        return JsonResponse({'success': True})
-    return JsonResponse({'success': False, 'error': 'Product not found in cart'})
-
-
-
-@login_required(login_url='login') 
+@login_required(login_url='login')
 def cart_view(request):
     """Display all cart items of the logged-in user"""
     cart_items = Cart.objects.filter(user=request.user).select_related('product')
@@ -306,34 +274,8 @@ def update_cart_quantity(request, cart_id):
 
     return JsonResponse({"success": False, "error": "Invalid request method"})
 
-@login_required
-def get_cart_items(request):
-    """
-    Return all cart items for the current logged-in user as JSON.
-    """
-    cart_items = Cart.objects.filter(user=request.user)
-    data = []
-    cart_total = 0
-
-    for item in cart_items:
-        total_price = item.quantity * item.price_at_addition
-        cart_total += total_price
-        data.append({
-            "id": item.id,
-            "name": item.product.name,
-            "image_url": item.product.image.url if item.product.image else "",
-            "quantity": item.quantity,
-            "price": float(item.price_at_addition),
-            "total_price": float(total_price),
-        })
-
-    return JsonResponse({
-        "cart_items": data,
-        "cart_total": float(cart_total)
-    })
-
 def product_detail(request, slug):
-    product = Product.objects.get(slug=slug)
+    product = get_object_or_404(Product, slug=slug)
     categories = Category.objects.all()
     category = product.category
     products = Product.objects.filter(status='active', category=category).order_by('-created_at')[:4]
@@ -467,28 +409,63 @@ def checkout_from_cart(request):
     if not cart_items.exists():
         return JsonResponse({"success": False, "message": "Cart is empty"}, status=400)
 
-    # === ONLINE PAYMENT DISABLED ===
-    if payment_method == "online":
-        return JsonResponse({
-            "success": False,
-            "message": "Online payment is currently disabled. Please use Cash on Delivery."
-        }, status=400)
+    total = sum(item.subtotal() for item in cart_items)
 
-    # === CASH ON DELIVERY → status = completed ===
-    order_status = "placed" if payment_method == "cod" else "pending"
+    def build_order_items(order):
+        return [
+            OrderItem(
+                order=order,
+                product=cart_item.product,
+                size=cart_item.size,
+                preference=cart_item.preference,
+                quantity=cart_item.quantity,
+                price_at_purchase=cart_item.price_at_addition
+            )
+            for cart_item in cart_items
+        ]
+
+    # === CASH ON DELIVERY → order is placed immediately ===
+    if payment_method == "cod":
+        with transaction.atomic():
+            order = Order.objects.create(
+                user=request.user,
+                address=address,
+                payment_method=payment_method,
+                status="placed",
+                total_amount=total
+            )
+            Payment.objects.create(
+                order=order,
+                user=request.user,
+                payment_method=payment_method,
+                amount=total,
+                status='pending'
+            )
+            OrderItem.objects.bulk_create(build_order_items(order))
+            cart_items.delete()
+
+        return JsonResponse({
+            "success": True,
+            "message": "Order placed successfully!",
+            "payment_method": "cod",
+            "order_id": order.id,
+            "status": order.status,
+            "total": float(order.total_amount)
+        })
+
+    # === ONLINE PAYMENT (Razorpay) ===
+    # The order is created as 'pending' and the cart is left intact until the
+    # payment is verified, so a failed/abandoned payment doesn't lose the cart.
     with transaction.atomic():
-        # Create Order
-        total = sum(item.subtotal() for item in cart_items)
         order = Order.objects.create(
             user=request.user,
             address=address,
             payment_method=payment_method,
-            status=order_status,
+            status="pending",
             total_amount=total
         )
-
-        # Create Payment object with pending status
-        Payment.objects.create(
+        OrderItem.objects.bulk_create(build_order_items(order))
+        payment = Payment.objects.create(
             order=order,
             user=request.user,
             payment_method=payment_method,
@@ -496,34 +473,118 @@ def checkout_from_cart(request):
             status='pending'
         )
 
+    try:
+        client = razorpay.Client(auth=(dj_settings.RAZORPAY_KEY_ID, dj_settings.RAZORPAY_KEY_SECRET))
+        razorpay_order = client.order.create({
+            "amount": int(total * 100),  # Razorpay expects paise
+            "currency": "INR",
+            "receipt": f"order_{order.id}",
+            "payment_capture": 1,
+        })
+    except Exception:
+        order.status = "cancelled"
+        order.save()
+        payment.status = "failed"
+        payment.save()
+        return JsonResponse({
+            "success": False,
+            "message": "Could not initiate online payment. Please try again."
+        }, status=502)
 
-        # Create OrderItems
-        order_items = []
-        for cart_item in cart_items:
-            order_items.append(
-                OrderItem(
-                    order=order,
-                    product=cart_item.product,
-                    size=cart_item.size,
-                    preference=cart_item.preference,
-                    quantity=cart_item.quantity,
-                    price_at_purchase=cart_item.price_at_addition
-                )
-            )
-
-        OrderItem.objects.bulk_create(order_items)
-
-        # Empty cart
-        cart_items.delete()
-
+    payment.payment_id = razorpay_order["id"]
+    payment.save()
 
     return JsonResponse({
         "success": True,
-        "message": "Order placed successfully!",
+        "payment_method": "online",
+        "order_id": order.id,
+        "razorpay_order_id": razorpay_order["id"],
+        "razorpay_key": dj_settings.RAZORPAY_KEY_ID,
+        "amount": razorpay_order["amount"],
+        "currency": razorpay_order["currency"],
+        "name": "Pickle Masters",
+        "description": f"Order #{order.id}",
+        "prefill": {
+            "name": f"{address.first_name} {address.last_name}".strip(),
+            "contact": address.mobile_number or "",
+            "email": request.user.email or "",
+        }
+    })
+
+
+@login_required
+def verify_payment(request):
+    if request.method != "POST":
+        return JsonResponse({"success": False, "message": "POST required"}, status=405)
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"success": False, "message": "Invalid JSON"}, status=400)
+
+    order_id = data.get("order_id")
+    razorpay_order_id = data.get("razorpay_order_id")
+    razorpay_payment_id = data.get("razorpay_payment_id")
+    razorpay_signature = data.get("razorpay_signature")
+
+    if not all([order_id, razorpay_order_id, razorpay_payment_id, razorpay_signature]):
+        return JsonResponse({"success": False, "message": "Missing payment details"}, status=400)
+
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    payment = get_object_or_404(Payment, order=order, user=request.user)
+
+    if payment.payment_id != razorpay_order_id:
+        return JsonResponse({"success": False, "message": "Order mismatch"}, status=400)
+
+    client = razorpay.Client(auth=(dj_settings.RAZORPAY_KEY_ID, dj_settings.RAZORPAY_KEY_SECRET))
+    try:
+        client.utility.verify_payment_signature({
+            "razorpay_order_id": razorpay_order_id,
+            "razorpay_payment_id": razorpay_payment_id,
+            "razorpay_signature": razorpay_signature,
+        })
+    except razorpay.errors.SignatureVerificationError:
+        payment.status = "failed"
+        payment.transaction_id = razorpay_payment_id
+        payment.save()
+        order.status = "cancelled"
+        order.save()
+        return JsonResponse({"success": False, "message": "Payment verification failed"}, status=400)
+
+    with transaction.atomic():
+        payment.status = "success"
+        payment.transaction_id = razorpay_payment_id
+        payment.save()
+        order.status = "placed"
+        order.save()
+        Cart.objects.filter(user=request.user).delete()
+
+    return JsonResponse({
+        "success": True,
+        "message": "Payment verified, order placed!",
         "order_id": order.id,
         "status": order.status,
-        "total": float(order.total_amount)
+        "total": float(order.total_amount),
     })
+
+
+@login_required
+def payment_cancel(request):
+    if request.method != "POST":
+        return JsonResponse({"success": False, "message": "POST required"}, status=405)
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"success": False, "message": "Invalid JSON"}, status=400)
+
+    order_id = data.get("order_id")
+    order = get_object_or_404(Order, id=order_id, user=request.user, status="pending")
+    order.status = "cancelled"
+    order.save()
+    Payment.objects.filter(order=order).update(status="failed")
+
+    return JsonResponse({"success": True, "message": "Payment cancelled"})
 
 
 
@@ -601,9 +662,13 @@ def contactus(request):
 
 def login_page(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
+        identifier = request.POST.get('username_or_email', '').strip()
         password = request.POST.get('password')
-        username = email 
+        username = identifier
+        if '@' in identifier:
+            existing_user = User.objects.filter(email__iexact=identifier).first()
+            if existing_user:
+                username = existing_user.username
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user) 
@@ -612,6 +677,54 @@ def login_page(request):
         else:
             toast.error(request, "Invalid credentials. Please try again.")
     return render(request, 'frontend/login.html')
+
+
+def google_login(request):
+    """Verify a Google Identity Services credential and log the user in,
+    creating an account on first sign-in."""
+    if request.method != "POST":
+        return JsonResponse({"success": False, "message": "POST required"}, status=405)
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"success": False, "message": "Invalid JSON"}, status=400)
+
+    credential = data.get("credential")
+    if not credential:
+        return JsonResponse({"success": False, "message": "Missing credential"}, status=400)
+
+    try:
+        idinfo = google_id_token.verify_oauth2_token(
+            credential, google_auth_requests.Request(), dj_settings.GOOGLE_CLIENT_ID
+        )
+    except ValueError:
+        return JsonResponse({"success": False, "message": "Invalid Google credential"}, status=400)
+
+    email = idinfo.get("email")
+    if not email or not idinfo.get("email_verified"):
+        return JsonResponse({"success": False, "message": "Google account has no verified email"}, status=400)
+
+    user = User.objects.filter(email__iexact=email).first()
+    if user is None:
+        username = email
+        num = 1
+        while User.objects.filter(username=username).exists():
+            username = f"{email}-{num}"
+            num += 1
+        user = User.objects.create(
+            username=username,
+            email=email,
+            first_name=idinfo.get("given_name", ""),
+            last_name=idinfo.get("family_name", ""),
+        )
+        user.set_unusable_password()
+        user.save()
+
+    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+    toast.success(request, f"Welcome, {user.first_name or user.username}!")
+
+    return JsonResponse({"success": True, "redirect_url": "/"})
 
 
 def signin(request):
@@ -859,7 +972,9 @@ def update_address(request, pk):
             'is_default': address.is_default
         })
 
-@login_required(login_url='login') 
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@login_required(login_url='login')
 def delete_address(request, pk):
     Address.objects.filter(id=pk, user=request.user).delete()
     return JsonResponse({'success': True})
@@ -938,7 +1053,7 @@ def change_password(request):
     return JsonResponse({'success': False, 'error': 'Invalid request'})
 
 def add_to_cart_ajax(request):
-    return 
+    return add_to_cart(request)
 
 def terms_and_conditions(request):
     products = Product.objects.filter(status='active').order_by('-created_at')
@@ -994,16 +1109,34 @@ def dashboard(request):
     categories = Category.objects.all()
     total_products = Product.objects.filter(status='active').count()
     total_orders = Order.objects.exclude(status='pending').count()
-    
 
     if request.user.is_superuser:
+        orders = (
+            Order.objects.filter(is_seen=False)
+            .select_related('user')
+            .prefetch_related('payments', 'items__product')
+            .order_by('-created_at')[:10]
+        )
         return render(request, 'backend/dashboard.html', {
             'categories': categories,
             'total_products': total_products,
             'total_orders': total_orders,
+            'orders': orders,
         })
     else:
         return redirect('home')
+
+
+@login_required(login_url='adminlogin')
+@require_POST
+def mark_order_seen(request, order_id):
+    if not request.user.is_superuser:
+        return redirect('home')
+
+    order = get_object_or_404(Order, pk=order_id)
+    order.is_seen = True
+    order.save(update_fields=['is_seen'])
+    return redirect('dashboard')
 
 
 @login_required(login_url='adminlogin')
@@ -1076,7 +1209,7 @@ def create_product(request):
             if product_form.is_valid():
                 product = product_form.save()
 
-                sizes = ['250 ml', '500 ml', '750 ml', '1 L']
+                sizes = ['250 grms', '500 grms', '750 grms', '1 kg']
                 for size in sizes:
                     price = request.POST.get(f'price_{size}', None)
                     discounted_price = request.POST.get(f'discounted_price_{size}', None)
@@ -1105,7 +1238,7 @@ def create_product(request):
 
         return render(request, 'backend/create_product.html', {
             'form': product_form,
-            'sizes': ['250ml', '500ml', '750ml', '1L'],
+            'sizes': ['250 grms', '500 grms', '750 grms', '1 kg'],
         })
     else:
         return redirect('home')
@@ -1118,24 +1251,31 @@ def edit_product(request, slug):
 
         if request.method == 'POST':
             form = ProductForm(request.POST, request.FILES, instance=product)
+            size_formset = ProductSizeFormSet(
+                request.POST, instance=product, prefix='sizes'
+            )
             files = request.FILES.getlist('images')
 
-            if form.is_valid():
-                form.save()
+            if form.is_valid() and size_formset.is_valid():
+                with transaction.atomic():
+                    form.save()
+                    size_formset.save()
 
-                # Add new images
-                for file in files:
-                    ProductImage.objects.create(product=product, image=file)
-
+                    for file in files:
+                        ProductImage.objects.create(product=product, image=file)
                 messages.success(request, "Product updated successfully!")
                 return redirect('products')
             else:
                 messages.error(request, "Please fix the errors below.")
         else:
             form = ProductForm(instance=product)
+            size_formset = ProductSizeFormSet(
+                instance=product, prefix='sizes'
+            )
 
         return render(request, 'backend/product_edit.html', {
             'form': form,
+            'size_formset': size_formset,
             'product': product,
             'images': images
         })
@@ -1172,7 +1312,9 @@ def order_detail(request, pk):
 @login_required(login_url='adminlogin')
 def orders_list(request):
     if request.user.is_superuser:
-        orders = Order.objects.exclude(status='pending').prefetch_related('payments')
+        orders = Order.objects.select_related('user').prefetch_related(
+            'payments', 'items__product'
+        )
         return render(request, 'backend/orders-list.html', {'orders': orders})
     else:
         return redirect('home')

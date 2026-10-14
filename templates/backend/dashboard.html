@@ -131,8 +131,9 @@
                                    <div class="card">
                                         <div class="d-flex card-header justify-content-between align-items-center">
                                              <div>
-                                                  <h4 class="card-title">All Order List</h4>
+                                                  <h4 class="card-title">Recent Orders</h4>
                                              </div>
+                                             <a href="{% url 'orders_list' %}" class="btn btn-sm btn-outline-primary">View all orders</a>
                                         </div>
                                         <div class="card-body p-0">
                                              <div class="table-responsive">
@@ -209,6 +210,11 @@
                                                                  <button class="btn btn-light btn-sm" onclick="toggleOrderItems('order-{{ order.id }}')">
                                                                       Items
                                                                  </button>
+
+                                                                 <form method="post" action="{% url 'mark_order_seen' order.id %}">
+                                                                      {% csrf_token %}
+                                                                      <button type="submit" class="btn btn-outline-secondary btn-sm">Mark as seen</button>
+                                                                 </form>
                                                                  </div>
                                                             </td>
                                                        </tr>
@@ -255,9 +261,9 @@
 
                                                   <br /><br />
 
-                                                  <p>No orders found.</p>
+                                                  <p>No new orders to review.</p>
 
-                                                  <a href="{% url 'shop' %}"> Continue Shopping </a>
+                                                  <a href="{% url 'orders_list' %}">View all orders</a>
                                              </div>
 
                                              {% endif %}

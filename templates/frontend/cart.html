@@ -118,6 +118,7 @@
 
 <!-- ==================== SCRIPTS ==================== -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
 /* ---------- CSRF TOKEN ---------- */
@@ -225,7 +226,14 @@ document.getElementById('checkoutForm').addEventListener('submit', function(e){
     })
     .then(r => r.json())
     .then(data => {
-        if (data.success) {
+        if (!data.success) {
+            Swal.fire('Failed', data.message, 'error');
+            return;
+        }
+
+        if (data.payment_method === 'online') {
+            openRazorpayCheckout(data);
+        } else {
             Swal.fire({
                 icon: 'success',
                 title: 'Order Placed!',
@@ -233,14 +241,85 @@ document.getElementById('checkoutForm').addEventListener('submit', function(e){
                 timer: 3000,
                 showConfirmButton: false
             }).then(() => {
-                window.location.href = "{% url 'orders_page' %}";   // redirect to orders page
+                window.location.href = "{% url 'orders_page' %}";
             });
-        } else {
-            Swal.fire('Failed', data.message, 'error');
         }
     })
     .catch(() => Swal.fire('Error','Network error','error'));
 });
+
+/* ---------- RAZORPAY ONLINE PAYMENT ---------- */
+function openRazorpayCheckout(data) {
+    const options = {
+        key: data.razorpay_key,
+        amount: data.amount,
+        currency: data.currency,
+        name: data.name,
+        description: data.description,
+        order_id: data.razorpay_order_id,
+        prefill: data.prefill,
+        theme: { color: '#b71c1c' },
+        handler: function (response) {
+            fetch('/payment/verify/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                body: JSON.stringify({
+                    order_id: data.order_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature
+                })
+            })
+            .then(r => r.json())
+            .then(verifyData => {
+                if (verifyData.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Payment Successful!',
+                        text: `Order #${verifyData.order_id} – ${verifyData.status.toUpperCase()}`,
+                        timer: 3000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = "{% url 'orders_page' %}";
+                    });
+                } else {
+                    Swal.fire('Payment Failed', verifyData.message, 'error');
+                }
+            })
+            .catch(() => Swal.fire('Error', 'Could not verify payment', 'error'));
+        },
+        modal: {
+            ondismiss: function () {
+                fetch('/payment/cancel/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken()
+                    },
+                    body: JSON.stringify({ order_id: data.order_id })
+                });
+                Swal.fire('Cancelled', 'Payment was not completed.', 'info');
+            }
+        }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.on('payment.failed', function () {
+        fetch('/payment/cancel/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify({ order_id: data.order_id })
+        });
+        Swal.fire('Payment Failed', 'Please try again.', 'error');
+    });
+    rzp.open();
+}
 
 /* ---------- OPTIONAL: Show selected address details ---------- */
 document.getElementById('billing-address-select').addEventListener('change', function(){

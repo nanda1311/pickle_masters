@@ -248,6 +248,7 @@ class Order(models.Model):
     payment_method = models.CharField(max_length=10, choices=PAYMENT_CHOICES)
     status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='pending')
     total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    is_seen = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -303,4 +304,4 @@ class Payment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.order.order_id} - {self.payment_method}"
+        return f"Order #{self.order_id} - {self.payment_method}"

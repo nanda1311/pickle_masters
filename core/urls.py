@@ -13,6 +13,7 @@ urlpatterns = [
     path('about-us/',aboutus, name='aboutus'),
     path('contact-us/', contactus, name='contactus'),
     path('login/', login_page, name='login'),
+    path('auth/google/', google_login, name='google_login'),
     path('sign-up/', signin, name='signin'),
     path('logout/', logout_user, name='logout'),
     path('privacy-policy/', privacy_policy, name='privacy_policy'),
@@ -21,7 +22,6 @@ urlpatterns = [
     path('profile/address/', address_profile, name='address_profile'),
 
 
-    path('addresses/create/', create_address, name='create_address'),
     path('addresses/create/', create_address, name='create_address'),
     path('addresses/get/<int:pk>/', get_address, name='get_address'),
     path('addresses/update/<int:pk>/', update_address, name='update_address'),
@@ -47,6 +47,8 @@ urlpatterns = [
     path('cart/delete/<int:cart_id>/', delete_cart_item, name='delete_cart_item'),
 
     path('checkout/', checkout_from_cart, name='checkout'),
+    path('payment/verify/', verify_payment, name='verify_payment'),
+    path('payment/cancel/', payment_cancel, name='payment_cancel'),
 
 
  
@@ -76,6 +78,7 @@ urlpatterns = [
 
     path('account/order/checkout/', order_checkout, name='order_checkout'),
     path('account/order/detail/<int:pk>/', order_detail, name='order_detail'),
+    path('account/order/<int:order_id>/seen/', mark_order_seen, name='mark_order_seen'),
     path('account/order/collect-cash/<int:order_id>/', collect_cash, name='collect_cash'),
     path('account/orders/list/', orders_list, name='orders_list'),
     path('account/product/details/', product_details, name='product_details'),
@@ -84,4 +87,3 @@ urlpatterns = [
     path('account/purchase/returns/', purchase_returns, name='purchase_returns'),
     path('account/settings/', settings, name='settings'),
 ]
-

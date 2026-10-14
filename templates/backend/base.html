@@ -22,6 +22,221 @@
 
      <!-- App css (Require in all Page) -->
      <link href="{% static 'backend/assets/css/app.min.css' %}" rel="stylesheet" type="text/css" />
+     <style>
+          html {
+               scroll-behavior: smooth;
+          }
+
+          body.backend-layout {
+               overflow-x: hidden;
+          }
+
+          .backend-layout .wrapper .page-content {
+               padding-right: clamp(1rem, 2.5vw, 2rem);
+               padding-left: 0;
+          }
+
+          .backend-layout .wrapper .content-wrapper {
+               position: relative;
+               min-height: calc(100vh - var(--bs-topbar-height));
+               margin-left: var(--bs-main-nav-width);
+               padding-right: clamp(1rem, 2.5vw, 2rem);
+               padding-bottom: var(--bs-footer-height);
+          }
+
+          .backend-layout .wrapper > .container-fluid,
+          .backend-layout .wrapper > .container-xxl,
+          .backend-layout .page-content > .container-fluid,
+          .backend-layout .page-content > .container-xxl,
+          .backend-layout .content-wrapper > .container-fluid,
+          .backend-layout .content-wrapper > .container-xxl {
+               padding-top: clamp(1rem, 2.5vw, 2rem);
+               padding-bottom: 1.5rem;
+          }
+
+          .backend-layout .page-content .card,
+          .backend-layout .content-wrapper .card,
+          .backend-layout .wrapper > .container-fluid .card {
+               border-radius: 0.85rem;
+               box-shadow: 0 0.25rem 1rem rgba(20, 31, 56, 0.06);
+          }
+
+          .backend-layout .page-content .card-header,
+          .backend-layout .content-wrapper .card-header {
+               gap: 0.75rem;
+               flex-wrap: wrap;
+          }
+
+          .backend-layout .page-content .card-header > :first-child,
+          .backend-layout .content-wrapper .card-header > :first-child {
+               min-width: 0;
+          }
+
+          .backend-layout .page-content .table-responsive,
+          .backend-layout .content-wrapper .table-responsive,
+          .backend-layout .wrapper > .container-fluid .table-responsive {
+               max-width: 100%;
+               overflow-x: auto;
+               -webkit-overflow-scrolling: touch;
+          }
+
+          .backend-layout .page-content .table-responsive > .table,
+          .backend-layout .content-wrapper .table-responsive > .table,
+          .backend-layout .wrapper > .container-fluid .table-responsive > .table {
+               min-width: 680px;
+               margin-bottom: 0;
+          }
+
+          .backend-layout .page-content .table th,
+          .backend-layout .content-wrapper .table th,
+          .backend-layout .wrapper > .container-fluid .table th {
+               color: #667085;
+               font-size: 0.78rem;
+               letter-spacing: 0.025em;
+               text-transform: uppercase;
+               white-space: nowrap;
+          }
+
+          .backend-layout .page-content .table td,
+          .backend-layout .content-wrapper .table td,
+          .backend-layout .wrapper > .container-fluid .table td {
+               vertical-align: middle;
+          }
+
+          .backend-layout .page-content form,
+          .backend-layout .content-wrapper form,
+          .backend-layout .wrapper > .container-fluid form {
+               min-width: 0;
+          }
+
+          .backend-layout .page-content .form-control,
+          .backend-layout .page-content .form-select,
+          .backend-layout .content-wrapper .form-control,
+          .backend-layout .content-wrapper .form-select,
+          .backend-layout .wrapper > .container-fluid .form-control,
+          .backend-layout .wrapper > .container-fluid .form-select {
+               min-height: 44px;
+               max-width: 100%;
+          }
+
+          .backend-layout .page-content img,
+          .backend-layout .content-wrapper img,
+          .backend-layout .wrapper > .container-fluid img {
+               max-width: 100%;
+          }
+
+          .backend-layout .page-content .btn,
+          .backend-layout .content-wrapper .btn,
+          .backend-layout .wrapper > .container-fluid .btn,
+          .backend-layout .main-nav .nav-link,
+          .backend-layout .main-nav .sub-nav-link {
+               min-height: 40px;
+          }
+
+          .backend-layout .footer {
+               left: var(--bs-main-nav-width);
+          }
+
+          @media (max-width: 1140px) {
+               .backend-layout .topbar {
+                    padding-left: 0;
+               }
+
+               .backend-layout .wrapper .page-content,
+               .backend-layout .wrapper .content-wrapper {
+                    margin-left: 0;
+               }
+
+               .backend-layout .footer {
+                    left: 0;
+               }
+
+               html.sidebar-enable .backend-layout .main-nav {
+                    z-index: 1055;
+                    box-shadow: 0 1rem 3rem rgba(16, 24, 40, 0.24);
+               }
+          }
+
+          @media (max-width: 767.98px) {
+               .backend-layout .topbar .container-fluid {
+                    padding-right: 0.75rem;
+                    padding-left: 0.75rem;
+               }
+
+               .backend-layout .topbar .navbar-header {
+                    gap: 0.5rem;
+               }
+
+               .backend-layout .topbar .topbar-button {
+                    max-width: min(62vw, 20rem);
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+               }
+
+               .backend-layout .wrapper .page-content,
+               .backend-layout .wrapper .content-wrapper {
+                    padding-right: 0.75rem;
+                    padding-left: 0.75rem;
+               }
+
+               .backend-layout .wrapper > .container-fluid,
+               .backend-layout .wrapper > .container-xxl,
+               .backend-layout .page-content > .container-fluid,
+               .backend-layout .page-content > .container-xxl,
+               .backend-layout .content-wrapper > .container-fluid,
+               .backend-layout .content-wrapper > .container-xxl {
+                    padding-right: 0.25rem;
+                    padding-left: 0.25rem;
+               }
+
+               .backend-layout .page-content .card-header,
+               .backend-layout .page-content .card-body,
+               .backend-layout .content-wrapper .card-header,
+               .backend-layout .content-wrapper .card-body {
+                    padding: 1rem;
+               }
+
+               .backend-layout .page-content .card-header > .btn,
+               .backend-layout .page-content .card-header > a.btn,
+               .backend-layout .content-wrapper .card-header > .btn,
+               .backend-layout .content-wrapper .card-header > a.btn {
+                    width: 100%;
+               }
+
+               .backend-layout .page-content .row,
+               .backend-layout .content-wrapper .row {
+                    --bs-gutter-x: 1rem;
+               }
+
+               .backend-layout .page-content .table-responsive > .table,
+               .backend-layout .content-wrapper .table-responsive > .table,
+               .backend-layout .wrapper > .container-fluid .table-responsive > .table {
+                    min-width: 720px;
+               }
+
+               .backend-layout .footer {
+                    position: static;
+                    min-height: 48px;
+                    height: auto;
+                    padding: 0.75rem;
+                    font-size: 0.8rem;
+               }
+          }
+
+          @media (max-width: 575.98px) {
+               .backend-layout .page-content .btn,
+               .backend-layout .content-wrapper .btn,
+               .backend-layout .wrapper > .container-fluid .btn {
+                    white-space: normal;
+               }
+
+               .backend-layout .page-content .d-flex.gap-2,
+               .backend-layout .content-wrapper .d-flex.gap-2 {
+                    flex-wrap: wrap;
+               }
+          }
+     </style>
 
      <!-- Theme Config js (Require in all Page) -->
      <script src="{% static 'backend/assets/js/config.js' %}"></script>
@@ -39,6 +254,7 @@
 
 </head>
 
+<body class="backend-layout">
 
      <!-- START Wrapper -->
      <div class="wrapper">
@@ -51,7 +267,7 @@
                          <div class="d-flex align-items-center">
                               <!-- Menu Toggle Button -->
                               <div class="topbar-item">
-                                   <button type="button" class="button-toggle-menu me-2">
+                                   <button type="button" class="button-toggle-menu me-2" aria-label="Toggle navigation" aria-controls="backend-navigation">
                                         <iconify-icon icon="solar:hamburger-menu-broken" class="fs-24 align-middle"></iconify-icon>
                                    </button>
                               </div>
@@ -85,7 +301,7 @@
           </header>
 
           <!-- ========== App Menu Start ========== -->
-          <div class="main-nav">
+          <div class="main-nav" id="backend-navigation">
                <!-- Sidebar Logo -->
                <div class="logo-box">
                     <a href="{% url 'dashboard' %}" class="logo-dark">
@@ -200,8 +416,6 @@ function confirmLogout(event) {
                     </ul>
                </div>
           </div>
-     </div>
-</div>
 
 
           {% block content %} {% endblock content %}
@@ -215,21 +429,22 @@ function confirmLogout(event) {
                     </div>
                </div>
           </footer>
+     </div>
 
 
      <!-- Vendor Javascript (Require in all Page) -->
-     <script src="{% static 'backend/assets/js/vendor.js' % }"></script>
+     <script src="{% static 'backend/assets/js/vendor.js' %}"></script>
 
      <!-- App Javascript (Require in all Page) -->
-     <script src="{% static 'backend/assets/js/app.js' % }"></script>
+     <script src="{% static 'backend/assets/js/app.js' %}"></script>
 
      <!-- Vector Map Js -->
-     <script src="{% static 'backend/assets/vendor/jsvectormap/js/jsvectormap.min.js' % }"></script>
-     <script src="{% static 'backend/assets/vendor/jsvectormap/maps/world-merc.js' % }"></script>
-     <script src="{% static 'backend/assets/vendor/jsvectormap/maps/world.js' % }"></script>
+     <script src="{% static 'backend/assets/vendor/jsvectormap/js/jsvectormap.min.js' %}"></script>
+     <script src="{% static 'backend/assets/vendor/jsvectormap/maps/world-merc.js' %}"></script>
+     <script src="{% static 'backend/assets/vendor/jsvectormap/maps/world.js' %}"></script>
 
      <!-- Dashboard Js -->
-     <script src="{% static 'backend/assets/js/pages/dashboard.js' % }"></script>
+     <script src="{% static 'backend/assets/js/pages/dashboard.js' %}"></script>
      
      <script>
           document.title = document.title.toUpperCase();
@@ -238,4 +453,5 @@ function confirmLogout(event) {
     {% block script %}
 
     {% endblock script %}
+</body>
 </html>

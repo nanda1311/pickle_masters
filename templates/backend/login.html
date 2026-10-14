@@ -1,87 +1,94 @@
 {% load static %}
 
-{% block title %}
-    <title>admin login</title>
-{% endblock title %}
-    
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <meta charset="utf-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1" />
+     <title>Admin login</title>
+     <link href="{% static 'backend/assets/css/app.min.css' %}" rel="stylesheet" type="text/css" />
+     <style>
+          .admin-login-page {
+               min-height: 100vh;
+               background:
+                    radial-gradient(circle at 15% 15%, rgba(255, 108, 47, 0.12), transparent 30rem),
+                    linear-gradient(135deg, #f5f7fb, #fffaf4);
+          }
 
+          .admin-login {
+               display: grid;
+               min-height: 100vh;
+               place-items: center;
+               padding: clamp(1rem, 5vw, 3rem);
+          }
 
+          .admin-login-card {
+               width: min(100%, 440px);
+               padding: clamp(1.5rem, 5vw, 2.5rem);
+               border: 1px solid rgba(16, 24, 40, 0.08);
+               border-radius: 1.25rem;
+               background: #fff;
+               box-shadow: 0 1.25rem 3.5rem rgba(20, 31, 56, 0.12);
+          }
 
+          .admin-login-heading {
+               margin-bottom: 2rem;
+               text-align: center;
+          }
 
-{% block content %}
+          .admin-login-mark {
+               display: grid;
+               width: 3.5rem;
+               height: 3.5rem;
+               margin: 0 auto 1rem;
+               place-items: center;
+               border-radius: 1rem;
+               background: rgba(255, 108, 47, 0.12);
+               color: #e65a1f;
+               font-size: 1.15rem;
+               font-weight: 800;
+          }
 
+          .admin-login-heading h1 {
+               margin-bottom: 0.5rem;
+               font-size: clamp(1.5rem, 5vw, 1.9rem);
+               font-weight: 700;
+          }
 
-<form method="post">
-     {% csrf_token %}
-     <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" name="username" required>
-     </div>
-     <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" required>
-     </div>
-     <button type="submit">Login</button>
-</form>
+          .admin-login .form-control {
+               min-height: 46px;
+          }
 
+          @media (max-width: 575.98px) {
+               .admin-login-card {
+                    border-radius: 1rem;
+               }
+          }
+     </style>
+</head>
+<body class="admin-login-page">
+     <main class="admin-login">
+          <section class="admin-login-card">
+               <div class="admin-login-heading">
+                    <span class="admin-login-mark" aria-hidden="true">PM</span>
+                    <p class="text-uppercase text-muted small mb-1">Pickle Masters</p>
+                    <h1>Admin sign in</h1>
+                    <p class="text-muted mb-0">Sign in to manage your store.</p>
+               </div>
 
-
-<style>
-     form {
-          max-width: 400px;
-          margin: 50px auto;
-          padding: 20px;
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-     }
-     
-     .form-group {
-          margin-bottom: 15px;
-     }
-     
-     label {
-          display: block;
-          margin-bottom: 5px;
-          font-weight: 500;
-          color: #333;
-     }
-     
-     input[type="text"],
-     input[type="password"] {
-          width: 100%;
-          padding: 10px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          font-size: 14px;
-          box-sizing: border-box;
-     }
-     
-     input[type="text"]:focus,
-     input[type="password"]:focus {
-          outline: none;
-          border-color: #4CAF50;
-          box-shadow: 0 0 5px rgba(76,175,80,0.3);
-     }
-     
-     button {
-          width: 100%;
-          padding: 10px;
-          background-color: #4CAF50;
-          color: white;
-          border: none;
-          border-radius: 4px;
-          font-size: 16px;
-          font-weight: 500;
-          cursor: pointer;
-     }
-     
-     button:hover {
-          background-color: #45a049;
-     }
-</style>
-
-
-
-
-{%  endblock content %}
+               <form method="post" class="admin-login-form">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                         <label for="username" class="form-label">Username</label>
+                         <input class="form-control" type="text" id="username" name="username" autocomplete="username" required>
+                    </div>
+                    <div class="mb-4">
+                         <label for="password" class="form-label">Password</label>
+                         <input class="form-control" type="password" id="password" name="password" autocomplete="current-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Sign in</button>
+               </form>
+          </section>
+     </main>
+</body>
+</html>

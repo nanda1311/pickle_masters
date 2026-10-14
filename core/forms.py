@@ -71,9 +71,40 @@ class ProductForm(forms.ModelForm):
 
 
 class ProductSizeForm(forms.ModelForm):
+    discounted_price = forms.DecimalField(
+        required=False,
+        min_value=0,
+        max_digits=10,
+        decimal_places=2,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'step': '0.01',
+            'min': '0',
+            'placeholder': 'Optional discount price',
+        }),
+    )
+
     class Meta:
         model = ProductSize
         fields = ['size', 'price', 'discounted_price']
+        widgets = {
+            'size': forms.Select(attrs={'class': 'form-select'}),
+            'price': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'step': '0.01',
+                'min': '0',
+                'placeholder': 'Regular price',
+            }),
+        }
+
+
+ProductSizeFormSet = inlineformset_factory(
+    Product,
+    ProductSize,
+    form=ProductSizeForm,
+    extra=1,
+    can_delete=True,
+)
 
 class ProductImageForm(forms.ModelForm):
     class Meta:
